@@ -498,3 +498,22 @@ select:focus{
   .storybook__peek{ right: 8px; width: min(200px, 55vw); }
   .storybook__char{ opacity: .12; }
 }
+/* FIX: make the storybook controls always clickable */
+.storybook { position: relative; }
+.storybook__art { z-index: 0; }
+.storybook__panel { position: relative; z-index: 5; }
+.storybook__row { position: relative; z-index: 6; }
+
+.storybook__peek{
+  z-index: 1;              /* behind the panel */
+  pointer-events: none;    /* never block clicks */
+}
+
+/* extra safety: ensure form controls receive clicks */
+#startLevelSelect,
+#storybookStartBtn{
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
