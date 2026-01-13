@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Raven’s Cozy Keepsakes</title>
+  <meta name="description" content="A storybook memory match game featuring Raven, Willow, Salem, and Bo." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__title">Raven’s Cozy Keepsakes</div>
+      <div class="brand__subtitle">Memory Match</div>
+    </div>
+
+    <div class="controls">
+      <label class="control">
+        <span>Level</span>
+        <select id="levelSelect" aria-label="Select level"></select>
+      </label>
+
+      <button id="startBtn" class="btn btn--primary" type="button">Start</button>
+      <button id="resetBtn" class="btn" type="button" disabled>Reset</button>
+    </div>
+
+    <div class="hud" aria-label="Game status">
+      <div class="hud__item"><span class="hud__label">Moves</span> <span id="moves">0</span></div>
+      <div class="hud__item"><span class="hud__label">Matches</span> <span id="matches">0</span>/<span id="totalPairs">0</span></div>
+      <div class="hud__item"><span class="hud__label">Time</span> <span id="time">0:00</span></div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="panel">
+      <div id="message" class="message" role="status" aria-live="polite">
+        Choose a level and press Start.
+      </div>
+      <div id="grid" class="grid" aria-label="Card grid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Built for GitHub Pages • HTML/CSS/JS</span>
+  </footer>
+
+  <script type="module" src="js/game.js"></script>
+</body>
+</html>
