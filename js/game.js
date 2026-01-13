@@ -1,46 +1,67 @@
-import { characters, items } from "./data.js"; 
+// js/game.js
+import { characters, items } from "./data.js";
 
 /**
- * Raven’s Cozy Keepsakes — release-ready core logic for GitHub Pages
- * Modes:
- *  - identical: match same-id pairs (character-character or item-item)
- *  - story: match character to their assigned item
+ * Raven’s Cozy Keepsakes — kid-friendly release logic
+ * - Starts at 4 cards (2 pairs), then 6, 8, 10, 12...
+ * - Early levels: identical matches only (gentle & predictable)
+ * - Later: optional story matching (character ↔ correct item)
  */
 
 const BACK_DEFAULT = "assets/backs/raven-seal.png";
 const BACK_AGED = "assets/backs/raven-seal-aged.png";
 
+// Neurodivergent-friendly progression
 const LEVELS = [
-  { id: 1, name: "Level 1 • Cozy Start (2×4)", cols: 4, rows: 2, mode: "identical", pool: ["raven", "willow", "salem", "bo"], back: BACK_DEFAULT },
-  { id: 2, name: "Level 2 • Friends & Finds (3×4)", cols: 4, rows: 3, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse"], back: BACK_DEFAULT },
-  { id: 3, name: "Level 3 • Memory Meadow (4×4)", cols: 4, rows: 4, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse", "sock", "leaf"], back: BACK_DEFAULT },
-  { id: 4, name: "Level 4 • Story Pairs (4×4)", cols: 4, rows: 4, mode: "story", back: BACK_AGED },
-  { id: 5, name: "Level 5 • Cozy Chaos (4×5)", cols: 5, rows: 4, mode: "story+decoys", back: BACK_AGED },
+  { id: 1, name: "Level 1 • 4 Cards (2×2)",  cols: 2, rows: 2, mode: "identical", pool: ["raven", "cookie"], back: BACK_DEFAULT, showTimer: false },
+  { id: 2, name: "Level 2 • 6 Cards (3×2)",  cols: 3, rows: 2, mode: "identical", pool: ["raven", "willow", "cookie"], back: BACK_DEFAULT, showTimer: false },
+  { id: 3, name: "Level 3 • 8 Cards (4×2)",  cols: 4, rows: 2, mode: "identical", pool: ["raven", "willow", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
+  { id: 4, name: "Level 4 • 10 Cards (5×2)", cols: 5, rows: 2, mode: "identical", pool: ["raven", "willow", "salem", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
+  { id: 5, name: "Level 5 • 12 Cards (4×3)", cols: 4, rows: 3, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
+
+  // Optional (advanced, still gentle): character ↔ their cozy item
+  { id: 6, name: "Level 6 • Story Pairs (4×3)", cols: 4, rows: 3, mode: "story", back: BACK_AGED, showTimer: false },
 ];
 
+// --------- DOM ----------
 const gridEl = document.getElementById("grid");
 const levelSelectEl = document.getElementById("levelSelect");
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
 
-const movesEl = document.getElementById("moves");
+const triesEl = document.getElementById("moves");
 const matchesEl = document.getElementById("matches");
 const totalPairsEl = document.getElementById("totalPairs");
 const timeEl = document.getElementById("time");
 const messageEl = document.getElementById("message");
 
+// Start screen (storybook)
+const startScreen = document.getElementById("startScreen");
+const storybookStartBtn = document.getElementById("storybookStartBtn");
+const startLevelSelect = document.getElementById("startLevelSelect");
+
+// Win overlay
+const winOverlay = document.getElementById("winOverlay");
+const winTitle = document.getElementById("winTitle");
+const winStats = document.getElementById("winStats");
+const nextLevelBtn = document.getElementById("nextLevelBtn");
+const playAgainBtn = document.getElementById("playAgainBtn");
+const closeWinBtn = document.getElementById("closeWinBtn");
+
+// --------- State ----------
 let currentLevel = LEVELS[0];
 let deck = [];
 let flipped = [];
 let locked = false;
 
-let moves = 0;
+let tries = 0;
 let matches = 0;
 let totalPairs = 0;
 
 let timer = null;
 let startTimeMs = 0;
 
+// --------- Data helpers ----------
 const charById = new Map(characters.map(c => [c.id, c]));
 const itemById = new Map(items.map(i => [i.id, i]));
 
@@ -65,6 +86,29 @@ function formatTime(ms) {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+function setMessage(text) {
+  messageEl.textContent = text;
+}
+
+function setTimerVisible(visible) {
+  const timeBox = timeEl?.closest(".hud__item");
+  if (!timeBox) return;
+  timeBox.style.display = visible ? "" : "none";
+}
+
+function getEncouragement() {
+  const messages = [
+    "You did a great job 🌟",
+    "Nice matching!",
+    "Raven is proud of you 💛",
+    "That was wonderful!",
+    "You kept trying — great work!",
+    "Look at you go!"
+  ];
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
+// --------- Deck builders ----------
 function buildDeck(level) {
   const cardCount = level.cols * level.rows;
   if (cardCount % 2 !== 0) throw new Error("Grid must have an even number of cards.");
@@ -93,6 +137,7 @@ function buildDeck(level) {
   }
 
   if (level.mode === "story") {
+    // Character ↔ correct item
     const basePairs = characters.flatMap(c => ([
       { type: "character", id: c.id, matchKey: `story:${c.id}` },
       { type: "item", id: c.matchItem, matchKey: `story:${c.id}` },
@@ -101,51 +146,33 @@ function buildDeck(level) {
     const cards = [];
     while (cards.length < cardCount) cards.push(...basePairs);
     cards.length = cardCount;
+
     return shuffle(cards).map((c, idx) => ({ ...c, idx, isMatched: false }));
-  }
-
-  if (level.mode === "story+decoys") {
-    const pairCount = cardCount / 2;
-
-    const storyPairs = characters.map(c => ({
-      cards: [
-        { type: "character", id: c.id, matchKey: `story:${c.id}` },
-        { type: "item", id: c.matchItem, matchKey: `story:${c.id}` },
-      ]
-    }));
-
-    const decoyIds = items.map(i => i.id);
-    const pairs = [...storyPairs];
-
-    while (pairs.length < pairCount) {
-      const id = decoyIds[Math.floor(Math.random() * decoyIds.length)];
-      const uniqueKey = `same:${id}:${pairs.length}`;
-      pairs.push({
-        cards: [
-          { type: "item", id, matchKey: uniqueKey },
-          { type: "item", id, matchKey: uniqueKey },
-        ]
-      });
-    }
-
-    const flat = pairs.slice(0, pairCount).flatMap(p => p.cards);
-    return shuffle(flat).map((c, idx) => ({ ...c, idx, isMatched: false }));
   }
 
   throw new Error(`Unknown mode: ${level.mode}`);
 }
 
-function setMessage(text) { messageEl.textContent = text; }
-
+// --------- Rendering ----------
 function renderLevelOptions() {
+  // Fill BOTH dropdowns: top bar + storybook start screen
   levelSelectEl.innerHTML = "";
+  startLevelSelect.innerHTML = "";
+
   for (const lvl of LEVELS) {
-    const opt = document.createElement("option");
-    opt.value = String(lvl.id);
-    opt.textContent = lvl.name;
-    levelSelectEl.appendChild(opt);
+    const optTop = document.createElement("option");
+    optTop.value = String(lvl.id);
+    optTop.textContent = lvl.name;
+    levelSelectEl.appendChild(optTop);
+
+    const optStart = document.createElement("option");
+    optStart.value = String(lvl.id);
+    optStart.textContent = lvl.name;
+    startLevelSelect.appendChild(optStart);
   }
+
   levelSelectEl.value = String(currentLevel.id);
+  startLevelSelect.value = String(currentLevel.id);
 }
 
 function renderGrid() {
@@ -187,16 +214,18 @@ function renderGrid() {
   });
 }
 
+// --------- Stats / timer ----------
 function resetStats() {
-  moves = 0;
+  tries = 0;
   matches = 0;
   totalPairs = (currentLevel.cols * currentLevel.rows) / 2;
 
-  movesEl.textContent = String(moves);
+  triesEl.textContent = String(tries);
   matchesEl.textContent = String(matches);
   totalPairsEl.textContent = String(totalPairs);
 
   timeEl.textContent = "0:00";
+  setTimerVisible(!!currentLevel.showTimer);
 }
 
 function stopTimer() {
@@ -212,6 +241,22 @@ function startTimer() {
   }, 250);
 }
 
+// --------- Overlays ----------
+function openWinOverlay(titleText, bodyText) {
+  winTitle.textContent = titleText;
+  winStats.textContent = bodyText;
+  winOverlay.classList.add("is-open");
+}
+
+function closeWinOverlay() {
+  winOverlay.classList.remove("is-open");
+}
+
+function closeStartScreen() {
+  startScreen.classList.remove("is-open");
+}
+
+// --------- Game flow ----------
 function startGame() {
   stopTimer();
   locked = false;
@@ -221,8 +266,9 @@ function startGame() {
   resetStats();
   renderGrid();
 
-  startTimer();
-  setMessage("Find matching pairs!");
+  if (currentLevel.showTimer) startTimer();
+
+  setMessage("Find matching pairs.");
   startBtn.disabled = true;
   resetBtn.disabled = false;
   levelSelectEl.disabled = true;
@@ -265,10 +311,12 @@ function isMatch(a, b) {
   return deck[a].matchKey === deck[b].matchKey;
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
 
 async function onCardClick(index) {
-  if (!startBtn.disabled) return;       // not started
+  if (!startBtn.disabled) return; // not started
   if (locked) return;
   if (deck[index]?.isMatched) return;
   if (flipped.includes(index)) return;
@@ -279,8 +327,8 @@ async function onCardClick(index) {
   if (flipped.length < 2) return;
 
   locked = true;
-  moves += 1;
-  movesEl.textContent = String(moves);
+  tries += 1;
+  triesEl.textContent = String(tries);
 
   const [a, b] = flipped;
   const ok = isMatch(a, b);
@@ -294,7 +342,9 @@ async function onCardClick(index) {
 
     if (matches === totalPairs) {
       stopTimer();
-      setMessage(`Level complete! Time: ${timeEl.textContent} • Moves: ${moves}`);
+      const encouragement = getEncouragement();
+      setMessage(encouragement);
+      openWinOverlay(encouragement, "Want to play again, or try the next one?");
       levelSelectEl.disabled = false;
       startBtn.disabled = false;
       resetBtn.disabled = false;
@@ -309,16 +359,56 @@ async function onCardClick(index) {
   locked = false;
 }
 
+// --------- Events ----------
 levelSelectEl.addEventListener("change", () => {
   const id = Number(levelSelectEl.value);
   const lvl = LEVELS.find(l => l.id === id);
   if (lvl) currentLevel = lvl;
 });
 
+startLevelSelect.addEventListener("change", () => {
+  const id = Number(startLevelSelect.value);
+  const lvl = LEVELS.find(l => l.id === id);
+  if (lvl) {
+    currentLevel = lvl;
+    levelSelectEl.value = String(lvl.id);
+  }
+});
+
+storybookStartBtn.addEventListener("click", () => {
+  closeStartScreen();
+  startGame();
+});
+
 startBtn.addEventListener("click", startGame);
 resetBtn.addEventListener("click", resetGame);
 
+closeWinBtn?.addEventListener("click", closeWinOverlay);
+
+playAgainBtn?.addEventListener("click", () => {
+  closeWinOverlay();
+  startGame();
+});
+
+nextLevelBtn?.addEventListener("click", () => {
+  closeWinOverlay();
+  const idx = LEVELS.findIndex(l => l.id === currentLevel.id);
+  const next = LEVELS[Math.min(idx + 1, LEVELS.length - 1)];
+  currentLevel = next;
+  levelSelectEl.value = String(next.id);
+  startLevelSelect.value = String(next.id);
+  startGame();
+});
+
+// --------- Init ----------
 (function init(){
   renderLevelOptions();
   resetGame();
+
+  // Default to Level 1 (4 cards)
+  currentLevel = LEVELS[0];
+  levelSelectEl.value = String(currentLevel.id);
+  startLevelSelect.value = String(currentLevel.id);
+
+  setTimerVisible(false);
 })();
