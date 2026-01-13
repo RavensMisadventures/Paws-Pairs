@@ -1,3 +1,4 @@
+// js/data.js
 export const characters = [
   {
     id: "raven",
