@@ -1,4 +1,4 @@
-import { characters, items } from "./data.js";
+import { characters, items } from "./data.js"; 
 
 /**
  * Raven’s Cozy Keepsakes — release-ready core logic for GitHub Pages
