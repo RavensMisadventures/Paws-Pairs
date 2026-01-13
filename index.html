@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,7 +8,44 @@
   <meta name="description" content="A storybook memory match game featuring Raven, Willow, Salem, and Bo." />
   <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
+  <!-- Decorative page corners (subtle) -->
+  <img class="decor decor--left" src="assets/characters/willow.png" alt="" />
+  <img class="decor decor--right" src="assets/characters/raven.png" alt="" />
+
+  <!-- Storybook Start Screen (Willow + Raven) -->
+  <div id="startScreen" class="overlay is-open" role="dialog" aria-modal="true" aria-label="Start screen">
+    <div class="storybook">
+      <div class="storybook__art" aria-hidden="true">
+        <img class="storybook__char storybook__char--left" src="assets/characters/willow.png" alt="" />
+        <img class="storybook__char storybook__char--right" src="assets/characters/raven.png" alt="" />
+      </div>
+
+      <div class="storybook__panel">
+        <div class="storybook__badge">A cozy memory game</div>
+        <h1 class="storybook__title">Raven’s Cozy Keepsakes</h1>
+        <p class="storybook__text">Flip cards and find matching pairs.</p>
+
+        <div class="storybook__row">
+          <label class="control">
+            <span>Level</span>
+            <select id="startLevelSelect" aria-label="Select level on start screen"></select>
+          </label>
+
+          <button id="storybookStartBtn" class="btn btn--primary btn--big" type="button">
+            Let’s play
+          </button>
+        </div>
+
+        <p class="storybook__hint">Grown-up tip: start with 4 cards.</p>
+      </div>
+
+      <!-- Raven peek (optional extra flourish) -->
+      <img class="storybook__peek" src="assets/characters/raven.png" alt="" />
+    </div>
+  </div>
+
   <header class="topbar">
     <div class="brand">
       <div class="brand__title">Raven’s Cozy Keepsakes</div>
@@ -25,7 +63,7 @@
     </div>
 
     <div class="hud" aria-label="Game status">
-      <div class="hud__item"><span class="hud__label">Moves</span> <span id="moves">0</span></div>
+      <div class="hud__item"><span class="hud__label">Tries</span> <span id="moves">0</span></div>
       <div class="hud__item"><span class="hud__label">Matches</span> <span id="matches">0</span>/<span id="totalPairs">0</span></div>
       <div class="hud__item"><span class="hud__label">Time</span> <span id="time">0:00</span></div>
     </div>
@@ -43,6 +81,24 @@
   <footer class="footer">
     <span>Built for GitHub Pages • HTML/CSS/JS</span>
   </footer>
+
+  <!-- Win overlay (Raven happy wiggle) -->
+  <div id="winOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Win screen">
+    <div class="modal">
+      <div>
+        <h2 id="winTitle" class="modal__title">Nice work!</h2>
+        <p id="winStats" class="modal__text">You found the pairs!</p>
+
+        <div class="modal__actions">
+          <button id="nextLevelBtn" class="btn btn--primary" type="button">Try the next one</button>
+          <button id="playAgainBtn" class="btn" type="button">Play again</button>
+          <button id="closeWinBtn" class="btn" type="button">All done</button>
+        </div>
+      </div>
+
+      <img class="raven-dance" src="assets/characters/raven.png" alt="Raven celebrating" />
+    </div>
+  </div>
 
   <script type="module" src="js/game.js"></script>
 </body>
