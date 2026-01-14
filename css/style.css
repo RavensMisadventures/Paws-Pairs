@@ -43,13 +43,12 @@ body{
   background:
     radial-gradient(500px 380px at 20% 30%, rgba(143,174,155,.35) 0%, rgba(143,174,155,0) 70%),
     radial-gradient(520px 380px at 85% 20%, rgba(194,109,75,.22) 0%, rgba(194,109,75,0) 72%);
-  filter: blur(0px);
 }
 
 .start-title{
   position:relative;
-  max-width: 680px;
-  padding: 64px 20px 20px;
+  max-width: 720px;
+  padding: 56px 18px 20px;
   margin: 0 auto;
   text-align:center;
 }
@@ -97,10 +96,11 @@ body{
 .start-char{
   position:absolute;
   bottom:-10px;
-  width:min(340px, 36vw);
-  max-height: 62vh;
+  width:min(320px, 34vw);
+  max-height: 56vh;
   object-fit:contain;
   filter: drop-shadow(0 22px 22px rgba(0,0,0,.18));
+  opacity: .95;
 }
 
 .start-char--left{ left: 4vw; transform: rotate(-2deg); }
@@ -108,14 +108,20 @@ body{
 
 .start-float{
   position:absolute;
-  width:min(170px, 16vw);
+  width:min(150px, 15vw);
   object-fit:contain;
   filter: drop-shadow(0 16px 18px rgba(0,0,0,.16));
-  opacity:.95;
+  opacity:.92;
 }
 .start-float--1{ left: 18vw; bottom: 22vh; transform: rotate(-8deg); }
 .start-float--2{ right: 22vw; bottom: 24vh; transform: rotate(10deg); }
 .start-float--3{ left: 48vw; bottom: 12vh; transform: rotate(6deg); }
+
+@media (max-width: 600px){
+  .start-title{ padding-top: 44px; }
+  .start-char{ width: 220px; opacity: .85; }
+  .start-float{ display:none; }
+}
 
 /* ---------- Buttons / Inputs ---------- */
 .btn{
@@ -160,7 +166,7 @@ select{
   align-items:center;
   justify-content:space-between;
   gap:14px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   background: rgba(251,246,238,.75);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,.08);
@@ -193,6 +199,7 @@ select{
   display:flex;
   align-items:center;
   gap:10px;
+  flex-wrap: wrap;
 }
 .stat{
   min-width: 86px;
@@ -219,7 +226,7 @@ select{
   position:relative;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 18px 16px 28px;
+  padding: 12px 12px 18px;
 }
 
 .message-row{
@@ -272,26 +279,38 @@ select{
 
 .scene-char{
   position:absolute;
-  bottom: 10px;
-  width: min(220px, 20vw);
-  max-height: 48vh;
+  bottom: 6px;
+  width: min(170px, 16vw);
+  max-height: 34vh;
   object-fit:contain;
-  filter: drop-shadow(0 20px 18px rgba(0,0,0,.18));
-  opacity:.95;
+  filter: drop-shadow(0 18px 16px rgba(0,0,0,.16));
+  opacity:.92;
 }
 .scene-char--left{ left:-10px; transform: rotate(-2deg); }
 .scene-char--right{ right:-10px; transform: rotate(2deg); }
 
 .scene-item{
   position:absolute;
-  width: min(120px, 10vw);
+  width: min(90px, 8vw);
   object-fit:contain;
-  filter: drop-shadow(0 14px 16px rgba(0,0,0,.16));
-  opacity:.92;
+  filter: drop-shadow(0 12px 14px rgba(0,0,0,.14));
+  opacity:.90;
 }
 .scene-item--1{ left: 14%; top: 110px; transform: rotate(-10deg); }
 .scene-item--2{ right: 18%; top: 130px; transform: rotate(12deg); }
 .scene-item--3{ left: 52%; top: 190px; transform: rotate(6deg); }
+
+/* Tablet */
+@media (max-width: 900px){
+  .scene-char{ width: min(150px, 18vw); opacity: .85; }
+  .scene-item{ width: min(78px, 9vw); opacity: .82; }
+}
+
+/* Mobile: keep only characters, hide floating items */
+@media (max-width: 600px){
+  .scene-char{ width: 120px; opacity: .72; }
+  .scene-item{ display:none; }
+}
 
 /* ---------- Board / Grid ---------- */
 .board{
@@ -301,31 +320,56 @@ select{
   border: 1px solid rgba(0,0,0,.08);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 12px;
+  overflow:hidden;
 }
 
-/* Responsive grid with controlled card size */
 .grid{
   display:grid;
-  gap: 14px;
+  gap: 12px;
   justify-content:center;
   align-content:center;
+
+  /* IMPORTANT: columns come from --cols */
   grid-template-columns: repeat(var(--cols, 4), var(--card));
-  --card: 118px; /* default */
+  --card: 108px; /* laptop default */
+  --cols: 4;
 }
 
-/* auto-set per column count via data attribute */
-.grid[data-cols="2"]{ --card: 150px; gap: 16px; }
-.grid[data-cols="3"]{ --card: 138px; }
-.grid[data-cols="4"]{ --card: 122px; }
-.grid[data-cols="5"]{ --card: 108px; }
+/* set cols + size based on data-cols (laptop baseline) */
+.grid[data-cols="2"]{ --cols: 2; --card: 132px; gap: 14px; }
+.grid[data-cols="3"]{ --cols: 3; --card: 120px; }
+.grid[data-cols="4"]{ --cols: 4; --card: 108px; }
+.grid[data-cols="5"]{ --cols: 5; --card: 96px; }
 
-@media (max-width: 720px){
-  .grid[data-cols="2"]{ --card: 130px; }
-  .grid[data-cols="3"]{ --card: 118px; }
-  .grid[data-cols="4"]{ --card: 104px; }
-  .grid[data-cols="5"]{ --card: 92px; }
-  .scene-item{ display:none; } /* keeps mobile clean */
+/* Tablet */
+@media (max-width: 900px){
+  .grid{ --card: 98px; }
+  .grid[data-cols="2"]{ --card: 124px; }
+  .grid[data-cols="3"]{ --card: 112px; }
+  .grid[data-cols="4"]{ --card: 98px; }
+  .grid[data-cols="5"]{ --card: 86px; }
+}
+
+/* Mobile */
+@media (max-width: 600px){
+  .stage{ padding: 10px 10px 14px; }
+  .board{ padding: 10px; }
+
+  .grid{ gap: 10px; --card: 86px; }
+  .grid[data-cols="2"]{ --card: 112px; gap: 12px; }
+  .grid[data-cols="3"]{ --card: 96px; }
+  .grid[data-cols="4"]{ --card: 82px; }
+  .grid[data-cols="5"]{ --card: 72px; } /* mostly not used now */
+}
+
+/* Tiny mobile */
+@media (max-width: 380px){
+  .grid{ --card: 78px; }
+  .grid[data-cols="2"]{ --card: 104px; }
+  .grid[data-cols="3"]{ --card: 90px; }
+  .grid[data-cols="4"]{ --card: 76px; }
+  .grid[data-cols="5"]{ --card: 68px; }
 }
 
 /* ---------- Card ---------- */
@@ -337,6 +381,7 @@ select{
   background: transparent;
   cursor:pointer;
   perspective: 900px;
+  touch-action: manipulation;
 }
 
 .card__inner{
@@ -349,7 +394,7 @@ select{
 }
 
 .card.is-flipped .card__inner{ transform: rotateY(180deg); }
-.card.is-matched{ cursor: default; }
+.card.is-matched{ cursor: default; opacity: .72; }
 
 .face{
   position:absolute;
@@ -394,7 +439,6 @@ select{
   width: 92%;
   height: 92%;
   object-fit: contain;
-  image-rendering: auto;
 }
 
 /* ---------- Win overlay ---------- */
@@ -408,9 +452,7 @@ select{
   justify-content:center;
   padding: 16px;
 }
-.win-overlay.is-open{
-  display:flex;
-}
+.win-overlay.is-open{ display:flex; }
 
 .win-card{
   width:min(860px, 96vw);
