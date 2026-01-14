@@ -2,44 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Paws & Pairs</title>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+
   <!-- Start Screen -->
-  <div id="startScreen" class="start-screen is-open" aria-hidden="false">
-    <div class="start-hero">
-      <div class="start-sky"></div>
-
-      <div class="start-title">
-        <h1>Paws &amp; Pairs</h1>
+  <section id="startScreen" class="start is-open" aria-hidden="false">
+    <div class="start-inner">
+      <header class="start-header">
+        <h1 class="start-title">Paws &amp; Pairs</h1>
         <p class="start-sub">Flip cards and find matching pairs.</p>
+      </header>
 
-        <div class="start-controls">
-          <label class="start-label" for="startLevelSelect">Level</label>
-          <select id="startLevelSelect" aria-label="Choose level"></select>
-
-          <button id="storybookStartBtn" class="btn btn-primary" type="button">
-            Let’s Play
-          </button>
-        </div>
-
-        <p class="start-tip">Grown-up tip: start with 4 cards.</p>
+      <div class="start-controls">
+        <label class="label" for="startLevel">Level</label>
+        <select id="startLevel"></select>
+        <button id="startPlay" class="btn primary" type="button">Let’s Play</button>
       </div>
 
-      <div class="start-characters" aria-hidden="true">
-        <img class="start-char start-char--left" src="assets/characters/willow.png" alt="" />
-        <img class="start-char start-char--right" src="assets/characters/raven.png" alt="" />
-        <img class="start-float start-float--1" src="assets/items/cookie.png" alt="" />
-        <img class="start-float start-float--2" src="assets/items/leaf.png" alt="" />
-        <img class="start-float start-float--3" src="assets/items/mouse.png" alt="" />
+      <p class="start-tip">Grown-up tip: start with 4 cards.</p>
+
+      <div class="start-art" aria-hidden="true">
+        <img class="art-char left" src="assets/characters/willow.png" alt="" />
+        <img class="art-char right" src="assets/characters/raven.png" alt="" />
+        <img class="art-item i1" src="assets/items/cookie.png" alt="" />
+        <img class="art-item i2" src="assets/items/leaf.png" alt="" />
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Main App -->
+  <!-- Game UI -->
   <header class="topbar">
     <div class="brand">
       <div class="brand-title">Paws &amp; Pairs</div>
@@ -49,41 +43,21 @@
     <div class="controls">
       <label class="label" for="levelSelect">Level</label>
       <select id="levelSelect"></select>
-
-      <button id="startBtn" class="btn btn-primary" type="button">Start</button>
-      <button id="resetBtn" class="btn btn-ghost" type="button" disabled>Reset</button>
+      <button id="btnStart" class="btn primary" type="button">Start</button>
+      <button id="btnReset" class="btn ghost" type="button" disabled>Reset</button>
     </div>
 
     <div class="stats">
-      <div class="stat">
-        <div class="stat-label">Tries</div>
-        <div id="moves" class="stat-value">0</div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Matches</div>
-        <div class="stat-value"><span id="matches">0</span>/<span id="totalPairs">0</span></div>
-      </div>
-      <div class="stat">
-        <div class="stat-label">Time</div>
-        <div id="time" class="stat-value">0:00</div>
-      </div>
+      <div class="stat"><span class="k">Tries</span><span id="tries" class="v">0</span></div>
+      <div class="stat"><span class="k">Matches</span><span class="v"><span id="matches">0</span>/<span id="pairs">0</span></span></div>
+      <div class="stat"><span class="k">Time</span><span id="time" class="v">0:00</span></div>
     </div>
   </header>
 
-  <main class="stage">
-    <div class="message-row">
+  <main class="wrap">
+    <div class="banner">
       <div id="message" class="message">Choose a level and press Start.</div>
-      <div id="encourage" class="encourage" aria-live="polite"></div>
-    </div>
-
-    <!-- Decorative “game scene” around the board -->
-    <div class="scene" aria-hidden="true">
-      <img id="decLeftChar" class="scene-char scene-char--left" src="assets/characters/willow.png" alt="" />
-      <img id="decRightChar" class="scene-char scene-char--right" src="assets/characters/raven.png" alt="" />
-
-      <img id="decItem1" class="scene-item scene-item--1" src="assets/items/cookie.png" alt="" />
-      <img id="decItem2" class="scene-item scene-item--2" src="assets/items/leaf.png" alt="" />
-      <img id="decItem3" class="scene-item scene-item--3" src="assets/items/mouse.png" alt="" />
+      <div id="cheer" class="cheer" aria-live="polite"></div>
     </div>
 
     <section class="board">
@@ -91,33 +65,24 @@
     </section>
   </main>
 
-  <!-- Win Overlay -->
-  <div id="winOverlay" class="win-overlay" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="win-card">
-      <button id="closeWinBtn" class="win-close" type="button" aria-label="Close">✕</button>
-
-      <div class="win-content">
-        <div class="win-text">
-          <h2 id="winTitle">You did it!</h2>
-          <p id="winStats" class="win-stats">Tries: 0 • Time: 0:00</p>
-
-          <div class="win-actions">
-            <button id="playAgainBtn" class="btn btn-primary" type="button">Play again</button>
-            <button id="nextLevelBtn" class="btn btn-ghost" type="button">Next level</button>
-          </div>
-        </div>
-
-        <div class="win-figure" aria-hidden="true">
-          <img id="winCharacter" src="assets/characters/raven.png" alt="" />
-        </div>
+  <!-- Win Screen -->
+  <section id="win" class="win" aria-hidden="true">
+    <div class="win-card" role="dialog" aria-modal="true">
+      <h2 id="winTitle">You did it!</h2>
+      <p id="winStats" class="win-stats">Tries: 0 • Time: 0:00</p>
+      <img id="winImg" class="win-img" src="assets/characters/raven.png" alt="Celebration" />
+      <div class="win-actions">
+        <button id="winAgain" class="btn primary" type="button">Play again</button>
+        <button id="winNext" class="btn ghost" type="button">Next level</button>
       </div>
+      <button id="winClose" class="win-close" type="button" aria-label="Close">✕</button>
     </div>
-  </div>
+  </section>
 
-  <footer class="footer">
-    Built for GitHub Pages • HTML/CSS/JS
-  </footer>
+  <footer class="footer">RavensMisadventures.org</footer>
 
-  <script type="module" src="./js/game.js"></script>
+  <!-- IMPORTANT: keep file names at repo root -->
+  <script type="module" src="game.js"></script>
 </body>
 </html>
+
