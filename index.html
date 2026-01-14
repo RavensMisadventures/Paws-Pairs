@@ -1,88 +1,75 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Paws & Pairs</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- Start Screen -->
-  <section id="startScreen" class="start is-open" aria-hidden="false">
-    <div class="start-inner">
-      <header class="start-header">
-        <h1 class="start-title">Paws &amp; Pairs</h1>
-        <p class="start-sub">Flip cards and find matching pairs.</p>
-      </header>
-
-      <div class="start-controls">
-        <label class="label" for="startLevel">Level</label>
-        <select id="startLevel"></select>
-        <button id="startPlay" class="btn primary" type="button">Let’s Play</button>
-      </div>
-
-      <p class="start-tip">Grown-up tip: start with 4 cards.</p>
-
-      <div class="start-art" aria-hidden="true">
-        <img class="art-char left" src="assets/characters/willow.png" alt="" />
-        <img class="art-char right" src="assets/characters/raven.png" alt="" />
-        <img class="art-item i1" src="assets/items/cookie.png" alt="" />
-        <img class="art-item i2" src="assets/items/leaf.png" alt="" />
-      </div>
+  <!-- START SCREEN -->
+  <section id="start-screen" class="start-screen">
+    <div class="start-top">
+      <h1 class="title">Paws &amp; Pairs</h1>
+      <button id="muteBtnStart" class="mute-btn" type="button" aria-pressed="false" aria-label="Sound on">
+        🔊 Sound
+      </button>
     </div>
+
+    <p class="subtitle">Flip cards and find matching pairs.</p>
+
+    <div class="start-heroes" aria-hidden="true">
+      <img class="start-char" src="assets/characters/raven.png" alt="" />
+      <img class="start-char" src="assets/characters/willow.png" alt="" />
+    </div>
+
+    <div class="start-controls">
+      <label class="control">
+        <span>Level</span>
+        <select id="levelSelect"></select>
+      </label>
+
+      <button id="startBtn" class="primary-btn" type="button">Let’s Play</button>
+    </div>
+
+    <p class="tip">Grown-up tip: start with 4 cards.</p>
   </section>
 
-  <!-- Game UI -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-title">Paws &amp; Pairs</div>
-      <div class="brand-sub">Memory Match</div>
-    </div>
+  <!-- GAME SCREEN -->
+  <main id="game-screen" class="hidden">
+    <header class="top-bar">
+      <div class="pill" id="levelLabel">Level 1</div>
+      <div class="pill" id="tries">Tries: 0</div>
+      <div class="pill" id="matches">Matches: 0</div>
 
-    <div class="controls">
-      <label class="label" for="levelSelect">Level</label>
-      <select id="levelSelect"></select>
-      <button id="btnStart" class="btn primary" type="button">Start</button>
-      <button id="btnReset" class="btn ghost" type="button" disabled>Reset</button>
-    </div>
+      <button id="muteBtn" class="mute-btn" type="button" aria-pressed="false" aria-label="Sound on">
+        🔊 Sound
+      </button>
+    </header>
 
-    <div class="stats">
-      <div class="stat"><span class="k">Tries</span><span id="tries" class="v">0</span></div>
-      <div class="stat"><span class="k">Matches</span><span class="v"><span id="matches">0</span>/<span id="pairs">0</span></span></div>
-      <div class="stat"><span class="k">Time</span><span id="time" class="v">0:00</span></div>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <div class="banner">
-      <div id="message" class="message">Choose a level and press Start.</div>
-      <div id="cheer" class="cheer" aria-live="polite"></div>
-    </div>
-
-    <section class="board">
-      <div id="grid" class="grid" aria-label="Card grid"></div>
+    <section class="board-wrap">
+      <section id="game-board" class="game-board" aria-label="Memory game board"></section>
     </section>
   </main>
 
-  <!-- Win Screen -->
-  <section id="win" class="win" aria-hidden="true">
-    <div class="win-card" role="dialog" aria-modal="true">
-      <h2 id="winTitle">You did it!</h2>
-      <p id="winStats" class="win-stats">Tries: 0 • Time: 0:00</p>
-      <img id="winImg" class="win-img" src="assets/characters/raven.png" alt="Celebration" />
+  <!-- WIN SCREEN -->
+  <section id="win-screen" class="hidden win-screen" role="dialog" aria-modal="true" aria-label="You win">
+    <div class="win-card">
+      <h2 class="win-title">You did it!</h2>
+      <p id="winMessage" class="win-msg">Nice matching!</p>
+
+      <img id="winCharacter" class="win-img" src="assets/characters/raven-dance.gif" alt="Raven dancing" />
+
       <div class="win-actions">
-        <button id="winAgain" class="btn primary" type="button">Play again</button>
-        <button id="winNext" class="btn ghost" type="button">Next level</button>
+        <button id="playAgainBtn" class="primary-btn" type="button">Play Again</button>
+        <button id="nextLevelBtn" class="secondary-btn" type="button">Next Level</button>
       </div>
-      <button id="winClose" class="win-close" type="button" aria-label="Close">✕</button>
+
+      <p class="tiny-note" id="difficultyNote">We’ll keep it comfy.</p>
     </div>
   </section>
 
-  <footer class="footer">RavensMisadventures.org</footer>
-
-  <!-- IMPORTANT: keep file names at repo root -->
-  <script type="module" src="game.js"></script>
+  <script type="module" src="js/game.js"></script>
 </body>
 </html>
-
