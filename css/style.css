@@ -5,6 +5,10 @@
   --ink:#1c1c1c;
   --shadow: rgba(0,0,0,.12);
   --cardBorder: rgba(192,122,89,.35);
+
+  /* card sizing */
+  --cardSize: clamp(64px, 14vw, 110px);
+  --cardGap: clamp(.35rem, 1.2vw, .65rem);
 }
 
 *{ box-sizing:border-box; }
@@ -22,9 +26,7 @@ body{
 .hidden{ display:none !important; }
 
 /* ---------- Buttons & controls ---------- */
-button, select{
-  font:inherit;
-}
+button, select{ font:inherit; }
 
 .primary-btn{
   background:var(--terra);
@@ -163,15 +165,15 @@ select{
 
 .game-board{
   display:grid;
-  gap: clamp(.5rem, 2.2vw, .9rem);
+  gap: var(--cardGap);
   justify-content:center;
   align-content:start;
   padding: .8rem 0 .2rem;
 }
 
-/* --- Responsive cards: size based on viewport --- */
+/* ---------- Cards ---------- */
 .card{
-  width: clamp(64px, 16vw, 120px);
+  width: var(--cardSize);
   aspect-ratio: 3 / 4;
   perspective: 900px;
   cursor:pointer;
@@ -221,7 +223,7 @@ select{
   border: 2px solid rgba(0,0,0,.10);
 }
 
-/* --- Feedback animations --- */
+/* ---------- Feedback animations ---------- */
 .wiggle{ animation: wiggle .45s ease-in-out 1; }
 .pop{ animation: pop .22s ease-out 1; }
 
@@ -298,5 +300,3 @@ select{
   font-size: .9rem;
   opacity:.7;
   font-weight:800;
-}
-
