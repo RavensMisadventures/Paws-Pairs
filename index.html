@@ -1,104 +1,98 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Raven’s Cozy Keepsakes</title>
-  <meta name="description" content="A storybook memory match game featuring Raven, Willow, Salem, and Bo." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paws & Pairs</title>
+
   <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-  <!-- Decorative page corners (subtle) -->
-  <img class="decor decor--left" src="assets/characters/willow.png" alt="" />
-  <img class="decor decor--right" src="assets/characters/raven.png" alt="" />
 
-  <!-- Storybook Start Screen (Willow + Raven) -->
-  <div id="startScreen" class="overlay is-open" role="dialog" aria-modal="true" aria-label="Start screen">
-    <div class="storybook">
-      <div class="storybook__art" aria-hidden="true">
-        <img class="storybook__char storybook__char--left" src="assets/characters/willow.png" alt="" />
-        <img class="storybook__char storybook__char--right" src="assets/characters/raven.png" alt="" />
-      </div>
+<!-- ===== START SCREEN ===== -->
+<div id="startScreen" class="overlay is-open startOverlay" role="dialog" aria-modal="true">
+  <div class="cozyStart">
 
-      <div class="storybook__panel">
-        <div class="storybook__badge">A cozy memory game</div>
-        <h1 class="storybook__title">Raven’s Cozy Keepsakes</h1>
-        <p class="storybook__text">Flip cards and find matching pairs.</p>
+    <!-- Sticker shapes -->
+    <div class="cozyStart__stickers" aria-hidden="true">
+      <img class="sticker s--raven"  src="assets/characters/raven.png" alt="" />
+      <img class="sticker s--willow" src="assets/characters/willow.png" alt="" />
 
-        <div class="storybook__row">
-          <label class="control">
-            <span>Level</span>
-            <select id="startLevelSelect" aria-label="Select level on start screen"></select>
-          </label>
-
-          <button id="storybookStartBtn" class="btn btn--primary btn--big" type="button">
-            Let’s play
-          </button>
-        </div>
-
-        <p class="storybook__hint">Grown-up tip: start with 4 cards.</p>
-      </div>
-
-      <!-- Raven peek (optional extra flourish) -->
-      <img class="storybook__peek" src="assets/characters/raven.png" alt="" />
+      <img class="sticker s--cookie" src="assets/items/cookie.png" alt="" />
+      <img class="sticker s--leaf"   src="assets/items/leaf.png" alt="" />
+      <img class="sticker s--mouse"  src="assets/items/mouse.png" alt="" />
+      <img class="sticker s--sock"   src="assets/items/sock.png" alt="" />
     </div>
+
+    <!-- Main card -->
+    <div class="cozyStart__card">
+      <div class="cozyStart__badge">A cozy memory game</div>
+
+      <h1 class="cozyStart__title">Paws &amp; Pairs</h1>
+      <p class="cozyStart__subtitle">
+        Flip cards and find matching pairs.
+      </p>
+
+      <div class="cozyStart__controls">
+        <label class="cozyControl">
+          <span class="cozyControl__label">Level</span>
+          <select id="startLevelSelect" class="cozySelect"></select>
+        </label>
+
+        <button id="storybookStartBtn" class="cozyBtn" type="button">
+          Let’s play!
+        </button>
+      </div>
+
+      <div class="cozyStart__tip">
+        Grown-up tip: start with 4 cards.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== GAME UI ===== -->
+<header class="topbar">
+  <h2>Paws &amp; Pairs</h2>
+
+  <div class="controls">
+    <label>
+      Level
+      <select id="levelSelect"></select>
+    </label>
+
+    <button id="startBtn">Start</button>
+    <button id="resetBtn" disabled>Reset</button>
   </div>
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand__title">Raven’s Cozy Keepsakes</div>
-      <div class="brand__subtitle">Memory Match</div>
-    </div>
+  <div class="hud">
+    <div class="hud__item">Tries <span id="moves">0</span></div>
+    <div class="hud__item">Matches <span id="matches">0</span>/<span id="totalPairs">0</span></div>
+    <div class="hud__item">Time <span id="time">0:00</span></div>
+  </div>
+</header>
 
-    <div class="controls">
-      <label class="control">
-        <span>Level</span>
-        <select id="levelSelect" aria-label="Select level"></select>
-      </label>
+<main class="main">
+  <div id="message" class="message">Choose a level and press Start.</div>
+  <div id="grid" class="grid"></div>
+</main>
 
-      <button id="startBtn" class="btn btn--primary" type="button">Start</button>
-      <button id="resetBtn" class="btn" type="button" disabled>Reset</button>
-    </div>
+<!-- ===== WIN OVERLAY ===== -->
+<div id="winOverlay" class="overlay">
+  <div class="winModal">
+    <h2 id="winTitle">Great job!</h2>
+    <p id="winStats"></p>
+    <img id="winCharacter" class="raven-dance" src="assets/characters/raven-dance.gif" alt="" />
 
-    <div class="hud" aria-label="Game status">
-      <div class="hud__item"><span class="hud__label">Tries</span> <span id="moves">0</span></div>
-      <div class="hud__item"><span class="hud__label">Matches</span> <span id="matches">0</span>/<span id="totalPairs">0</span></div>
-      <div class="hud__item"><span class="hud__label">Time</span> <span id="time">0:00</span></div>
-    </div>
-  </header>
-
-  <main class="main">
-    <section class="panel">
-      <div id="message" class="message" role="status" aria-live="polite">
-        Choose a level and press Start.
-      </div>
-      <div id="grid" class="grid" aria-label="Card grid"></div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <span>Built for GitHub Pages • HTML/CSS/JS</span>
-  </footer>
-
-  <!-- Win overlay (Raven happy wiggle) -->
-  <div id="winOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="Win screen">
-    <div class="modal">
-      <div>
-        <h2 id="winTitle" class="modal__title">Nice work!</h2>
-        <p id="winStats" class="modal__text">You found the pairs!</p>
-
-        <div class="modal__actions">
-          <button id="nextLevelBtn" class="btn btn--primary" type="button">Try the next one</button>
-          <button id="playAgainBtn" class="btn" type="button">Play again</button>
-          <button id="closeWinBtn" class="btn" type="button">All done</button>
-        </div>
-      </div>
-
-      <img class="raven-dance" src="assets/characters/raven.png" alt="Raven celebrating" />
+    <div class="winActions">
+      <button id="playAgainBtn">Play again</button>
+      <button id="nextLevelBtn">Next level</button>
+      <button id="closeWinBtn">All done</button>
     </div>
   </div>
+</div>
 
-  <script type="module" src="js/game.js"></script>
+<script type="module" src="js/game.js"></script>
 </body>
 </html>
