@@ -1,16 +1,7 @@
 // js/game.js
 import { characters, items, storyPairs } from "../data.js";
 
-/**
- * Paws & Pairs — calm memory match for young kids
- * - Identical matching for most levels
- * - Optional Story mode level included
- * - Win screen shows different character each level (includes raven-dance.gif)
- * - Game scene decor changes per level (characters + items)
- */
-
 const BACK_DEFAULT = "assets/backs/raven-seal.png";
-const BACK_AGED = "assets/backs/raven-seal-aged.png"; // optional if you have it
 
 const byId = (id) => document.getElementById(id);
 
@@ -39,7 +30,6 @@ const playAgainBtn = byId("playAgainBtn");
 const nextLevelBtn = byId("nextLevelBtn");
 const closeWinBtn = byId("closeWinBtn");
 
-// Decor elements around board
 const decLeftChar = byId("decLeftChar");
 const decRightChar = byId("decRightChar");
 const decItem1 = byId("decItem1");
@@ -52,8 +42,7 @@ for (const i of items) lookup.set(i.id, i);
 
 function asset(id){
   const obj = lookup.get(id);
-  if (!obj) return null;
-  return obj.src;
+  return obj ? obj.src : null;
 }
 
 function label(id){
@@ -61,25 +50,15 @@ function label(id){
   return obj ? obj.name : id;
 }
 
-/**
- * Levels:
- * - Level 1 starts with 4 cards (2 pairs)
- * - Level 2: 6 cards (3 pairs)
- * - Level 3: 8 cards (4 pairs)
- * - Level 4: 12 cards (6 pairs)
- * - Level 5: 16 cards (8 pairs)
- * - Level 6: 20 cards (10 pairs)  <-- matching pairs
- */
 const LEVELS = [
   { id: 1, name: "Level 1 • 4 Cards (2×2)", cols: 2, rows: 2, mode: "identical", pool: ["raven", "willow"], back: BACK_DEFAULT },
   { id: 2, name: "Level 2 • 6 Cards (3×2)", cols: 3, rows: 2, mode: "identical", pool: ["raven", "willow", "cookie"], back: BACK_DEFAULT },
   { id: 3, name: "Level 3 • 8 Cards (4×2)", cols: 4, rows: 2, mode: "identical", pool: ["raven", "willow", "cookie", "leaf"], back: BACK_DEFAULT },
   { id: 4, name: "Level 4 • 12 Cards (4×3)", cols: 4, rows: 3, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse"], back: BACK_DEFAULT },
   { id: 5, name: "Level 5 • 16 Cards (4×4)", cols: 4, rows: 4, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse", "sock", "feather"], back: BACK_DEFAULT },
-  { id: 6, name: "Level 6 • 20 Cards (5×4)", cols: 5, rows: 4, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse", "sock", "feather", "leaf", "rock"], back: BACK_DEFAULT },
 
-  // Optional story mode (leave for later if you want)
-  // { id: 7, name: "Bonus • Story Pairs (4×4)", cols: 4, rows: 4, mode: "story", back: BACK_AGED },
+  // Level 6: 20 cards (5×4 normally) — auto switches to 4 columns on small screens
+  { id: 6, name: "Level 6 • 20 Cards (5×4)", cols: 5, rows: 4, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse", "sock", "feather", "leaf", "rock"], back: BACK_DEFAULT },
 ];
 
 const WIN_CHARACTER_BY_LEVEL = {
@@ -114,16 +93,9 @@ let totalPairs = 0;
 let timer = null;
 let startTime = 0;
 
-/* ---------- setup UI ---------- */
+let isRunning = false;
 
-function populateLevelSelects(){
-  const opts = LEVELS.map(l => `<option value="${l.id}">${l.name}</option>`).join("");
-  levelSelect.innerHTML = opts;
-  startLevelSelect.innerHTML = opts;
-
-  levelSelect.value = String(currentLevelId);
-  startLevelSelect.value = String(currentLevelId);
-}
+/* ---------- helpers ---------- */
 
 function setMessage(text){
   message.textContent = text;
@@ -162,8 +134,6 @@ function pickEncouragement(){
   return ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
 }
 
-/* ---------- deck building ---------- */
-
 function shuffle(arr){
   for (let i = arr.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
@@ -172,43 +142,38 @@ function shuffle(arr){
   return arr;
 }
 
+/* ---------- responsive columns ---------- */
+/**
+ * Level 6 auto-switch:
+ * - On small screens (<= 600px), show as 4 columns (cards wrap into 5 rows)
+ * - We DO NOT change card count — only the visual columns.
+ */
+function effectiveCols(level){
+  if (level.id === 6 && window.matchMedia("(max-width: 600px)").matches) return 4;
+  return level.cols;
+}
+
+function applyGridCols(level){
+  grid.dataset.cols = String(effectiveCols(level));
+}
+
+/* ---------- deck building ---------- */
+
+function makeCard(faceId, matchKey){
+  return {
+    uid: crypto.randomUUID(),
+    faceId,
+    matchKey,
+    flipped: false,
+    matched: false,
+  };
+}
+
 function buildDeck(level){
-  const slots = level.cols * level.rows;
-
-  if (level.mode === "story"){
-    const pairs = [];
-    const storyCharIds = Object.keys(storyPairs);
-
-    for (const cid of storyCharIds){
-      const iid = storyPairs[cid];
-      if (asset(cid) && asset(iid)){
-        pairs.push({ a: cid, b: iid, matchKey: `story:${cid}` });
-      }
-    }
-
-    const cards = [];
-    for (const p of pairs){
-      cards.push(makeCard(p.a, p.matchKey), makeCard(p.b, p.matchKey));
-    }
-
-    const remaining = slots - cards.length;
-    if (remaining > 0){
-      const extraPool = [...new Set([...(level.pool || []), ...items.map(i=>i.id)])]
-        .filter(id => asset(id));
-      shuffle(extraPool);
-
-      while (cards.length < slots && extraPool.length){
-        const id = extraPool.pop();
-        cards.push(makeCard(id, `id:${id}`), makeCard(id, `id:${id}`));
-      }
-    }
-
-    return shuffle(cards).slice(0, slots);
-  }
-
+  const slots = level.cols * level.rows; // always use true card count
   const pairsNeeded = Math.floor(slots / 2);
-  const pool = (level.pool || []).filter(id => asset(id));
 
+  const pool = (level.pool || []).filter(id => asset(id));
   const chosen = [];
   const poolCopy = shuffle([...pool]);
 
@@ -229,21 +194,12 @@ function buildDeck(level){
   return shuffle(cards).slice(0, slots);
 }
 
-function makeCard(faceId, matchKey){
-  return {
-    uid: crypto.randomUUID(),
-    faceId,
-    matchKey,
-    flipped: false,
-    matched: false,
-  };
-}
-
 /* ---------- rendering ---------- */
 
 function render(level){
   grid.innerHTML = "";
-  grid.dataset.cols = String(level.cols);
+
+  applyGridCols(level);
 
   totalPairs = Math.floor((level.cols * level.rows) / 2);
   totalPairsEl.textContent = String(totalPairs);
@@ -313,17 +269,17 @@ function chooseDecorItems(level){
   const pool = (level.pool || []).filter(id => asset(id));
   const poolItems = pool.filter(id => lookup.get(id)?.type === "item");
 
-  const fallback = [
-    "cookie","leaf","mouse","sock","feather","rock","cat-bed","security-blanket"
-  ].filter(id => asset(id));
+  const fallback = ["cookie","leaf","mouse","sock","feather","rock","cat-bed","security-blanket"]
+    .filter(id => asset(id));
 
   const candidates = poolItems.length ? poolItems : fallback;
   const picked = shuffle([...candidates]).slice(0, 3);
 
-  const a = picked[0] || "cookie";
-  const b = picked[1] || "leaf";
-  const c = picked[2] || "mouse";
-  return [a,b,c];
+  return [
+    picked[0] || "cookie",
+    picked[1] || "leaf",
+    picked[2] || "mouse",
+  ];
 }
 
 function updateDecor(level){
@@ -337,7 +293,16 @@ function updateDecor(level){
   decItem3.src = asset(c) || asset("mouse");
 }
 
-/* ---------- game flow ---------- */
+/* ---------- level selection ---------- */
+
+function populateLevelSelects(){
+  const opts = LEVELS.map(l => `<option value="${l.id}">${l.name}</option>`).join("");
+  levelSelect.innerHTML = opts;
+  startLevelSelect.innerHTML = opts;
+
+  levelSelect.value = String(currentLevelId);
+  startLevelSelect.value = String(currentLevelId);
+}
 
 function setLevel(id){
   currentLevelId = id;
@@ -349,9 +314,12 @@ function getLevel(){
   return LEVELS.find(l => l.id === currentLevelId) || LEVELS[0];
 }
 
+/* ---------- game flow ---------- */
+
 function startGame(){
   const level = getLevel();
 
+  isRunning = true;
   resetBtn.disabled = false;
   closeWin();
 
@@ -371,6 +339,7 @@ function startGame(){
 }
 
 function resetGame(){
+  isRunning = false;
   stopTimer();
   resetStats();
   grid.innerHTML = "";
@@ -480,36 +449,28 @@ function onWin(){
 
 function openWin(){
   winOverlay.classList.add("is-open");
+  winOverlay.setAttribute("aria-hidden", "false");
 }
 
 function closeWin(){
   winOverlay.classList.remove("is-open");
+  winOverlay.setAttribute("aria-hidden", "true");
 }
 
-/* ---------- wire up controls ---------- */
+/* ---------- events ---------- */
 
 populateLevelSelects();
 
-levelSelect.addEventListener("change", () => {
-  setLevel(Number(levelSelect.value));
-});
-
-startLevelSelect.addEventListener("change", () => {
-  setLevel(Number(startLevelSelect.value));
-});
+levelSelect.addEventListener("change", () => setLevel(Number(levelSelect.value)));
+startLevelSelect.addEventListener("change", () => setLevel(Number(startLevelSelect.value)));
 
 storybookStartBtn.addEventListener("click", () => {
   startScreen.classList.remove("is-open");
   startGame();
 });
 
-startBtn.addEventListener("click", () => {
-  startGame();
-});
-
-resetBtn.addEventListener("click", () => {
-  resetGame();
-});
+startBtn.addEventListener("click", startGame);
+resetBtn.addEventListener("click", resetGame);
 
 playAgainBtn.addEventListener("click", () => {
   closeWin();
@@ -527,8 +488,13 @@ nextLevelBtn.addEventListener("click", () => {
   }
 });
 
-closeWinBtn.addEventListener("click", () => {
-  closeWin();
+closeWinBtn.addEventListener("click", closeWin);
+
+// Responsive: re-apply columns on resize (important for Level 6)
+window.addEventListener("resize", () => {
+  if (!isRunning) return;
+  const level = getLevel();
+  applyGridCols(level);
 });
 
 // Start at level 1
