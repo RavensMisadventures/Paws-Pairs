@@ -300,3 +300,8 @@ select{
   font-size: .9rem;
   opacity:.7;
   font-weight:800;
+/* ensure hero images never block clicks */
+.start-heroes { pointer-events: none; }
+
+/* ensure controls sit above anything */
+.start-controls { position: relative; z-index: 5; }
