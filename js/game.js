@@ -5,7 +5,8 @@ import { characters, items } from "./data.js";
  * Fixes:
  *  - Robust asset path handling (no leading /)
  *  - Better grid spacing (fixed card-size columns, not 1fr)
- * Keeps:
+ * Includes:
+ *  - Home/Exit button to return to start screen
  *  - Mute toggle (localStorage)
  *  - Gentle WebAudio sounds
  *  - Wiggle animations
@@ -40,6 +41,8 @@ const nextLevelBtn = document.getElementById("nextLevelBtn");
 
 const muteBtn = document.getElementById("muteBtn");
 const muteBtnStart = document.getElementById("muteBtnStart");
+
+const exitBtn = document.getElementById("exitBtn");
 
 // -------- State --------
 let currentLevelIndex = 0;
@@ -155,14 +158,11 @@ function pop(el) {
 // -------- Path safety (fixes broken images on Pages) --------
 function safeAssetPath(p) {
   if (!p) return "";
-  // remove leading "./"
   let out = String(p).replace(/^\.\//, "");
-  // remove leading "/" (THIS breaks on GitHub Pages project sites)
   out = out.replace(/^\/+/, "");
   return out;
 }
 
-// If an image fails, show a small friendly fallback
 function attachImgFallback(imgEl, label) {
   imgEl.addEventListener("error", () => {
     imgEl.style.display = "none";
@@ -176,14 +176,27 @@ function attachImgFallback(imgEl, label) {
     holder.textContent = label || "Missing";
     imgEl.parentElement?.appendChild(holder);
 
-    // Helpful dev hint in console (so you can see the exact broken URL)
     try {
-      // resolved URL based on current page (what the browser actually requests)
       const resolved = new URL(imgEl.getAttribute("src"), window.location.href).href;
       console.warn("Image failed to load:", resolved);
     } catch {}
   });
 }
+
+// -------- Exit / Home button --------
+exitBtn?.addEventListener("click", () => {
+  flipped = [];
+  matches = 0;
+  tries = 0;
+
+  gameScreen.classList.add("hidden");
+  winScreen.classList.add("hidden");
+  startScreen.classList.remove("hidden");
+
+  board.innerHTML = "";
+
+  tone(330, 0.08, "triangle", 0.04);
+});
 
 // -------- Game flow --------
 startBtn.addEventListener("click", () => {
@@ -218,10 +231,8 @@ function startGame(level) {
   flipped = [];
   updateUI();
 
-  // IMPORTANT: fixed-size columns so cards don't spread far apart
   board.style.gridTemplateColumns = `repeat(${level.cols}, var(--cardSize))`;
 
-  // Normalize data.js entries; enforce safe paths
   const pool = [...characters, ...items]
     .filter(Boolean)
     .map((x) => ({
@@ -229,10 +240,8 @@ function startGame(level) {
       img: safeAssetPath(x.img || x.src),
       name: x.name || x.id,
     }))
-    // don't use the dance gif as a card
     .filter((x) => x.id !== "raven-dance");
 
-  // pick pairs; if you add more items later this still works
   const picked = pool.slice(0, level.pairs);
   const cards = [...picked, ...picked].sort(() => Math.random() - 0.5);
 
@@ -360,4 +369,3 @@ function showWin() {
   }
 
   winScreen.classList.remove("hidden");
-}
