@@ -19,9 +19,10 @@ const LEVELS = [
   { id: 4, name: "Level 4 • 10 Cards (5×2)", cols: 5, rows: 2, mode: "identical", pool: ["raven", "willow", "salem", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
   { id: 5, name: "Level 5 • 12 Cards (4×3)", cols: 4, rows: 3, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
 
-  // Optional (advanced, still gentle): character ↔ their cozy item
-  { id: 6, name: "Level 6 • Story Pairs (4×3)", cols: 4, rows: 3, mode: "story", back: BACK_AGED, showTimer: false },
+  // Level 6: matching pairs (bigger board)
+  { id: 6, name: "Level 6 • 16 Cards (4×4)", cols: 4, rows: 4, mode: "identical", pool: ["raven","willow","salem","bo","cookie","mouse","sock","leaf"], back: BACK_DEFAULT, showTimer: false },
 ];
+
 
 // --------- DOM ----------
 const gridEl = document.getElementById("grid");
