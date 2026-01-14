@@ -13,10 +13,10 @@ const BACK_AGED = "assets/backs/raven-seal-aged.png";
 
 // Neurodivergent-friendly progression
 const LEVELS = [
-  { id: 1, name: "Level 1 • 4 Cards (2×2)",  cols: 2, rows: 2, mode: "identical", pool: ["raven", "cookie"], back: BACK_DEFAULT, showTimer: false },
+  { id: 1, name: "Level 1 • 4 Cards (2×2)",  cols: 2, rows: 2, mode: "identical", pool: ["raven", "security-blanket"], back: BACK_DEFAULT, showTimer: false },
   { id: 2, name: "Level 2 • 6 Cards (3×2)",  cols: 3, rows: 2, mode: "identical", pool: ["raven", "willow", "cookie"], back: BACK_DEFAULT, showTimer: false },
-  { id: 3, name: "Level 3 • 8 Cards (4×2)",  cols: 4, rows: 2, mode: "identical", pool: ["raven", "willow", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
-  { id: 4, name: "Level 4 • 10 Cards (5×2)", cols: 5, rows: 2, mode: "identical", pool: ["raven", "willow", "salem", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
+  { id: 3, name: "Level 3 • 8 Cards (4×2)",  cols: 4, rows: 2, mode: "identical", pool: ["raven", "willow", "cookie", "security-blanket"], back: BACK_DEFAULT, showTimer: false },
+  { id: 4, name: "Level 4 • 10 Cards (5×2)", cols: 5, rows: 2, mode: "identical", pool: ["raven", "willow", "salem", "feather", "mouse"], back: BACK_DEFAULT, showTimer: false },
   { id: 5, name: "Level 5 • 12 Cards (4×3)", cols: 4, rows: 3, mode: "identical", pool: ["raven", "willow", "salem", "bo", "cookie", "mouse"], back: BACK_DEFAULT, showTimer: false },
 
   // Level 6: matching pairs (bigger board)
