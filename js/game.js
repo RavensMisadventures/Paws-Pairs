@@ -1,12 +1,15 @@
 import { characters, items } from "./data.js";
 
 /**
- * Paws & Pairs (GitHub Pages /js version)
- * Adds:
- *  - Mute toggle (persists with localStorage)
- *  - Gentle WebAudio sound effects (no files needed)
- *  - Happy wiggle animations
- *  - Difficulty auto-adjust based on success
+ * Paws & Pairs
+ * Fixes:
+ *  - Robust asset path handling (no leading /)
+ *  - Better grid spacing (fixed card-size columns, not 1fr)
+ * Keeps:
+ *  - Mute toggle (localStorage)
+ *  - Gentle WebAudio sounds
+ *  - Wiggle animations
+ *  - Auto difficulty by success
  */
 
 const LEVELS = [
@@ -15,7 +18,7 @@ const LEVELS = [
   { id: 3, pairs: 4, cols: 4 },   // 8 cards
   { id: 4, pairs: 6, cols: 4 },   // 12 cards
   { id: 5, pairs: 8, cols: 4 },   // 16 cards
-  { id: 6, pairs: 10, cols: 4 },  // 20 cards (always 4 cols; mobile friendly)
+  { id: 6, pairs: 10, cols: 4 },  // 20 cards (always 4 cols)
 ];
 
 // -------- Elements --------
@@ -44,7 +47,6 @@ let flipped = [];
 let matches = 0;
 let tries = 0;
 
-// Difficulty auto-adjust
 const LS_LEVEL = "paws_pairs_level";
 const LS_STREAK = "paws_pairs_streak";
 const LS_MUTED = "paws_pairs_muted";
@@ -59,9 +61,8 @@ LEVELS.forEach((l) => {
 
 // Load saved level if present
 const savedLevel = Number(localStorage.getItem(LS_LEVEL) || "1");
-const savedIndex = Math.min(Math.max(savedLevel - 1, 0), LEVELS.length - 1);
-levelSelect.value = String(savedIndex + 1);
-currentLevelIndex = savedIndex;
+currentLevelIndex = Math.min(Math.max(savedLevel - 1, 0), LEVELS.length - 1);
+levelSelect.value = String(currentLevelIndex + 1);
 
 // -------- Mute handling --------
 let muted = localStorage.getItem(LS_MUTED) === "1";
@@ -71,16 +72,13 @@ function renderMuteButtons() {
   const aria = muted ? "true" : "false";
   const ariaLabel = muted ? "Sound muted" : "Sound on";
 
-  if (muteBtn) {
-    muteBtn.textContent = label;
-    muteBtn.setAttribute("aria-pressed", aria);
-    muteBtn.setAttribute("aria-label", ariaLabel);
-  }
-  if (muteBtnStart) {
-    muteBtnStart.textContent = label;
-    muteBtnStart.setAttribute("aria-pressed", aria);
-    muteBtnStart.setAttribute("aria-label", ariaLabel);
-  }
+  muteBtn && (muteBtn.textContent = label);
+  muteBtn && muteBtn.setAttribute("aria-pressed", aria);
+  muteBtn && muteBtn.setAttribute("aria-label", ariaLabel);
+
+  muteBtnStart && (muteBtnStart.textContent = label);
+  muteBtnStart && muteBtnStart.setAttribute("aria-pressed", aria);
+  muteBtnStart && muteBtnStart.setAttribute("aria-label", ariaLabel);
 }
 
 function toggleMute() {
@@ -98,7 +96,7 @@ let audioCtx = null;
 let audioEnabled = false;
 
 function initAudio() {
-  if (muted) return; // don't even start audio if muted
+  if (muted) return;
   try {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     audioEnabled = true;
@@ -117,7 +115,6 @@ function tone(freq = 440, dur = 0.08, type = "triangle", vol = 0.05) {
   osc.type = type;
   osc.frequency.setValueAtTime(freq, now);
 
-  // soft envelope
   gain.gain.setValueAtTime(0.0001, now);
   gain.gain.exponentialRampToValueAtTime(vol, now + 0.01);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
@@ -141,7 +138,6 @@ function updateUI() {
   levelLabelEl.textContent = `Level ${currentLevelIndex + 1}`;
 }
 
-// Restart animations cleanly
 function wiggle(el) {
   el.classList.remove("wiggle");
   void el.offsetWidth;
@@ -156,12 +152,43 @@ function pop(el) {
   setTimeout(() => el.classList.remove("pop"), 260);
 }
 
+// -------- Path safety (fixes broken images on Pages) --------
+function safeAssetPath(p) {
+  if (!p) return "";
+  // remove leading "./"
+  let out = String(p).replace(/^\.\//, "");
+  // remove leading "/" (THIS breaks on GitHub Pages project sites)
+  out = out.replace(/^\/+/, "");
+  return out;
+}
+
+// If an image fails, show a small friendly fallback
+function attachImgFallback(imgEl, label) {
+  imgEl.addEventListener("error", () => {
+    imgEl.style.display = "none";
+    const holder = document.createElement("div");
+    holder.style.width = "90%";
+    holder.style.height = "90%";
+    holder.style.display = "grid";
+    holder.style.placeItems = "center";
+    holder.style.fontWeight = "900";
+    holder.style.opacity = "0.75";
+    holder.textContent = label || "Missing";
+    imgEl.parentElement?.appendChild(holder);
+
+    // Helpful dev hint in console (so you can see the exact broken URL)
+    try {
+      // resolved URL based on current page (what the browser actually requests)
+      const resolved = new URL(imgEl.getAttribute("src"), window.location.href).href;
+      console.warn("Image failed to load:", resolved);
+    } catch {}
+  });
+}
+
 // -------- Game flow --------
 startBtn.addEventListener("click", () => {
-  // Apple devices need a user gesture to start audio
   if (!audioCtx) initAudio();
 
-  // level from dropdown
   currentLevelIndex = Number(levelSelect.value) - 1;
   localStorage.setItem(LS_LEVEL, String(currentLevelIndex + 1));
 
@@ -191,17 +218,21 @@ function startGame(level) {
   flipped = [];
   updateUI();
 
-  // Grid columns (Level 6 always 4 cols; mobile friendly)
-  board.style.gridTemplateColumns = `repeat(${level.cols}, 1fr)`;
+  // IMPORTANT: fixed-size columns so cards don't spread far apart
+  board.style.gridTemplateColumns = `repeat(${level.cols}, var(--cardSize))`;
 
-  // Normalize images from data.js: support img or src
-  const pool = [...characters, ...items].filter(Boolean).map((x) => ({
-    id: x.id,
-    img: x.img || x.src,
-    name: x.name || x.id,
-  }));
+  // Normalize data.js entries; enforce safe paths
+  const pool = [...characters, ...items]
+    .filter(Boolean)
+    .map((x) => ({
+      id: x.id,
+      img: safeAssetPath(x.img || x.src),
+      name: x.name || x.id,
+    }))
+    // don't use the dance gif as a card
+    .filter((x) => x.id !== "raven-dance");
 
-  // pick pairs and duplicate
+  // pick pairs; if you add more items later this still works
   const picked = pool.slice(0, level.pairs);
   const cards = [...picked, ...picked].sort(() => Math.random() - 0.5);
 
@@ -217,14 +248,19 @@ function createCard(item) {
   card.setAttribute("role", "button");
   card.setAttribute("aria-label", "Memory card");
 
+  const frontImgSrc = item.img;
+
   card.innerHTML = `
     <div class="card-inner">
       <div class="card-face card-back"></div>
       <div class="card-face card-front">
-        <img src="${item.img}" alt="${item.name}">
+        <img src="${frontImgSrc}" alt="${item.name}">
       </div>
     </div>
   `;
+
+  const imgEl = card.querySelector("img");
+  if (imgEl) attachImgFallback(imgEl, item.name);
 
   card.addEventListener("click", () => flip(card, item));
   board.appendChild(card);
@@ -277,10 +313,8 @@ function check() {
 }
 
 // -------- Difficulty auto-adjust by success --------
-// comfy scoring: fewer tries = stronger success
 function scoreWin(levelPairs, triesCount) {
-  // Minimum tries is levelPairs if perfect. We allow a comfy margin.
-  const perfect = levelPairs; // each pair found in one try
+  const perfect = levelPairs;
   const good = Math.ceil(levelPairs * 1.8);
   const ok = Math.ceil(levelPairs * 2.6);
 
@@ -294,21 +328,14 @@ function showWin() {
   const level = LEVELS[currentLevelIndex];
   const result = scoreWin(level.pairs, tries);
 
-  // streak logic: only count great/perfect as "strong success"
   let streak = Number(localStorage.getItem(LS_STREAK) || "0");
-
-  if (result === "great" || result === "perfect") {
-    streak += 1;
-  } else {
-    streak = 0;
-  }
+  if (result === "great" || result === "perfect") streak += 1;
+  else streak = 0;
   localStorage.setItem(LS_STREAK, String(streak));
 
-  // Recommend next level if the kid is consistently successful
   const canAdvance = currentLevelIndex < LEVELS.length - 1;
   const shouldAdvance = canAdvance && streak >= 2;
 
-  // Messages (gentle and encouraging)
   const msgMap = {
     perfect: "Wow! Super matching! ⭐⭐⭐",
     great: "Great job! ⭐⭐",
@@ -321,19 +348,14 @@ function showWin() {
     ? "You’re ready for a slightly bigger game next time."
     : "We’ll keep it comfy. You can try again or move on.";
 
-  // Next level button availability
   nextLevelBtn.disabled = !canAdvance;
   nextLevelBtn.style.opacity = canAdvance ? "1" : ".5";
 
-  // Auto-adjust: if strong streak, preselect next level and label it
   if (shouldAdvance) {
     currentLevelIndex += 1;
     localStorage.setItem(LS_LEVEL, String(currentLevelIndex + 1));
     levelSelect.value = String(currentLevelIndex + 1);
-
-    // reset streak so it doesn't jump multiple levels
     localStorage.setItem(LS_STREAK, "0");
-
     winMessageEl.textContent = "Next level unlocked! ⭐⭐";
   }
 
