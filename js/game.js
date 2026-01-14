@@ -143,11 +143,6 @@ function shuffle(arr){
 }
 
 /* ---------- responsive columns ---------- */
-/**
- * Level 6 auto-switch:
- * - On small screens (<= 600px), show as 4 columns (cards wrap into 5 rows)
- * - We DO NOT change card count — only the visual columns.
- */
 function effectiveCols(level){
   if (level.id === 6 && window.matchMedia("(max-width: 600px)").matches) return 4;
   return level.cols;
