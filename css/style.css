@@ -183,3 +183,88 @@ body{
 .winActions button{
   margin:6px;
 }
+/* ===== CARD SIZE FIX (IMPORTANT) ===== */
+
+/* Grid layout */
+.grid{
+  display: grid;
+  gap: 14px;
+  justify-content: center;
+  align-content: center;
+}
+
+/* Dynamic columns based on JS data-cols */
+.grid[data-cols="2"]{ grid-template-columns: repeat(2, 120px); }
+.grid[data-cols="3"]{ grid-template-columns: repeat(3, 110px); }
+.grid[data-cols="4"]{ grid-template-columns: repeat(4, 100px); }
+.grid[data-cols="5"]{ grid-template-columns: repeat(5, 92px); }
+
+/* Card container */
+.card{
+  width: 100%;
+  aspect-ratio: 3 / 4;      /* friendly card shape */
+  border-radius: 18px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  perspective: 1000px;
+}
+
+/* Inner flip wrapper */
+.card__inner{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+/* Flip state */
+.card.is-flipped .card__inner{
+  transform: rotateY(180deg);
+}
+
+/* Faces */
+.face{
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card back */
+.face--back{
+  background: #F3E6D6;
+  border: 3px solid #C36B4A;
+}
+
+/* Raven seal on back */
+.face__seal{
+  width: 70%;
+  height: auto;
+}
+
+/* Card front */
+.face--front{
+  background: #FFF9F1;
+  border: 3px solid #7E9B8C;
+  transform: rotateY(180deg);
+}
+
+/* Character / item images */
+.face__img{
+  max-width: 85%;
+  max-height: 85%;
+  object-fit: contain;
+  mix-blend-mode: multiply;   /* softens white backgrounds */
+}
+
+/* Matched cards (gentle feedback) */
+.card.is-matched{
+  opacity: 0.6;
+  pointer-events: none;
+}
