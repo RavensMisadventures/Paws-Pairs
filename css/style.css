@@ -1,307 +1,32 @@
-:root{
-  --sage:#c7d4c1;
-  --cream:#fbf7ef;
-  --terra:#c07a59;
-  --ink:#1c1c1c;
-  --shadow: rgba(0,0,0,.12);
-  --cardBorder: rgba(192,122,89,.35);
 
-  /* card sizing */
-  --cardSize: clamp(64px, 14vw, 110px);
-  --cardGap: clamp(.35rem, 1.2vw, .65rem);
+:root {
+  --card-size: clamp(64px, 14vw, 110px);
+  --card-gap: clamp(.35rem, 1.2vw, .65rem);
 }
 
-*{ box-sizing:border-box; }
-
-body{
-  margin:0;
-  font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color:var(--ink);
-  background:
-    radial-gradient(circle at 15% 10%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%),
-    linear-gradient(var(--cream),var(--sage));
-  text-align:center;
+* {
+  box-sizing: border-box;
 }
 
-.hidden{ display:none !important; }
-
-/* ---------- Buttons & controls ---------- */
-button, select{ font:inherit; }
-
-.primary-btn{
-  background:var(--terra);
-  color:white;
-  border:none;
-  padding:.7rem 1.1rem;
-  border-radius:16px;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow: 0 10px 16px var(--shadow);
-  transition: transform .08s ease, filter .15s ease;
-}
-.primary-btn:active{ transform: translateY(1px) scale(.99); }
-
-.secondary-btn{
-  background:rgba(255,255,255,.7);
-  color:var(--ink);
-  border:2px solid rgba(0,0,0,.12);
-  padding:.7rem 1.1rem;
-  border-radius:16px;
-  font-weight:900;
-  cursor:pointer;
-}
-
-.mute-btn{
-  background:rgba(255,255,255,.72);
-  border:2px solid rgba(0,0,0,.12);
-  border-radius:14px;
-  padding:.5rem .8rem;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow: 0 8px 14px var(--shadow);
-}
-.mute-btn[aria-pressed="true"]{
-  filter:saturate(.8);
-  opacity:.9;
-}
-
-select{
-  padding:.55rem .85rem;
-  border-radius:14px;
-  border:2px solid rgba(0,0,0,.12);
-  background:rgba(255,255,255,.76);
-  font-weight:900;
-}
-
-/* ---------- Start Screen ---------- */
-.start-screen{
-  padding:1.2rem 1rem 2rem;
-  max-width: 980px;
-  margin: 0 auto;
-}
-
-.start-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:1rem;
-}
-
-.title{
-  margin:.2rem 0 .4rem;
-  font-size: clamp(1.8rem, 4.5vw, 3rem);
-  letter-spacing:.3px;
-}
-
-.subtitle{
-  margin:.2rem auto 1rem;
-  max-width: 40ch;
-  font-weight:700;
-  opacity:.85;
-}
-
-.start-heroes{
-  display:flex;
-  justify-content:center;
-  gap: clamp(.5rem, 3vw, 1.4rem);
-  margin: .6rem 0 1rem;
-  flex-wrap:wrap;
-}
-
-.start-char{
-  width: clamp(110px, 22vw, 170px);
-  height:auto;
-  filter: drop-shadow(0 12px 16px var(--shadow));
-}
-
-.start-controls{
-  display:flex;
-  justify-content:center;
-  align-items:flex-end;
-  gap:.8rem;
-  flex-wrap:wrap;
-  margin: .8rem 0 .4rem;
-}
-
-.control{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:.35rem;
-  font-weight:900;
-}
-
-.tip{
-  margin:.8rem 0 0;
-  opacity:.75;
-  font-weight:800;
-}
-
-/* ---------- Game Screen ---------- */
-.top-bar{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:.6rem;
-  padding: .8rem .8rem;
-}
-
-.pill{
-  background:rgba(255,255,255,.72);
-  border:2px solid rgba(0,0,0,.10);
-  padding:.45rem .7rem;
-  border-radius:999px;
-  font-weight:900;
-  box-shadow: 0 10px 16px var(--shadow);
-}
-
-.board-wrap{
-  width:100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: .2rem .8rem 1.4rem;
-}
-
-.game-board{
-  display:grid;
-  gap: var(--cardGap);
-  justify-content:center;
-  align-content:start;
-  padding: .8rem 0 .2rem;
-}
-
-/* ---------- Cards ---------- */
-.card{
-  width: var(--cardSize);
-  aspect-ratio: 3 / 4;
-  perspective: 900px;
-  cursor:pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.card-inner{
-  width:100%;
-  height:100%;
-  transition: transform .42s ease;
-  transform-style: preserve-3d;
-  position: relative;
-}
-
-.card.flipped .card-inner{ transform: rotateY(180deg); }
-
-.card-face{
-  position:absolute;
-  inset:0;
-  backface-visibility:hidden;
-  border-radius: 16px;
-  overflow:hidden;
-  box-shadow: 0 12px 18px var(--shadow);
-}
-
-.card-front{
-  background: rgba(255,255,255,.92);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border: 2px solid var(--cardBorder);
-  transform: rotateY(180deg);
-}
-
-.card-front img{
-  width: 90%;
-  height: 90%;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,.10));
-}
-
-.card-back{
-  background:
-    radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%),
-    url("../assets/backs/raven-seal.png") center/contain no-repeat,
-    linear-gradient(rgba(251,247,239,.88), rgba(199,212,193,.88));
-  border: 2px solid rgba(0,0,0,.10);
-}
-
-/* ---------- Feedback animations ---------- */
-.wiggle{ animation: wiggle .45s ease-in-out 1; }
-.pop{ animation: pop .22s ease-out 1; }
-
-@keyframes wiggle{
-  0%{ transform: translateZ(0) rotate(0deg) scale(1); }
-  25%{ transform: translateZ(0) rotate(-5deg) scale(1.04); }
-  50%{ transform: translateZ(0) rotate(5deg) scale(1.04); }
-  75%{ transform: translateZ(0) rotate(-3deg) scale(1.02); }
-  100%{ transform: translateZ(0) rotate(0deg) scale(1); }
-}
-
-@keyframes pop{
-  0%{ transform: scale(1); }
-  60%{ transform: scale(1.06); }
-  100%{ transform: scale(1); }
-}
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .wiggle,.pop{ animation:none !important; }
-  .card-inner{ transition:none !important; }
-}
-
-/* ---------- Win Screen ---------- */
-.win-screen{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('assets/images/cozy_game_background.png') no-repeat center center fixed;
+  background-size: cover;
+  text-align: center;
   padding: 1rem;
-  background: rgba(0,0,0,.25);
-  backdrop-filter: blur(4px);
+  color: #4b3f3f;
 }
 
-.win-card{
-  width:min(520px, 92vw);
-  background: rgba(251,247,239,.92);
-  border: 2px solid rgba(0,0,0,.10);
-  border-radius: 22px;
-  box-shadow: 0 20px 32px rgba(0,0,0,.20);
-  padding: 1.1rem 1.1rem 1.2rem;
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
 }
 
-.win-title{
-  margin: .2rem 0 .2rem;
-  font-size: 1.8rem;
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, var(--card-size));
+  gap: var(--card-gap);
+  justify-content: center;
+  padding: 1rem;
 }
-
-.win-msg{
-  margin: .2rem 0 .7rem;
-  font-weight: 800;
-  opacity:.9;
-}
-
-.win-img{
-  width: clamp(120px, 30vw, 180px);
-  height:auto;
-  display:block;
-  margin: 0 auto .8rem;
-  filter: drop-shadow(0 14px 18px rgba(0,0,0,.16));
-}
-
-.win-actions{
-  display:flex;
-  justify-content:center;
-  gap:.7rem;
-  flex-wrap:wrap;
-  margin:.2rem 0 .5rem;
-}
-
-.tiny-note{
-  margin: .4rem 0 0;
-  font-size: .9rem;
-  opacity:.7;
-  font-weight:800;
-/* ensure hero images never block clicks */
-.start-heroes { pointer-events: none; }
-
-/* ensure controls sit above anything */
-.start-controls { position: relative; z-index: 5; }
