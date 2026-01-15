@@ -1,106 +1,76 @@
-<!doctype html>
+this is my current index    <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Raven’s Cozy Quest — Tic-Tac-Toe</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Paws & Pairs</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
-  <main class="app">
-    <header class="top">
-      <div class="brand">
-        <h1 class="title">Raven’s Cozy Quest</h1>
-        <p class="subtitle">Flip a card to place your cozy symbol.</p>
+  <!-- START SCREEN -->
+  <main id="start-screen" class="start-screen">
+    <div class="start-top">
+      <div style="text-align:left">
+        <h1 class="title">Paws &amp; Pairs</h1>
+        <p class="subtitle">Flip cards and find matching pairs.</p>
       </div>
 
-      <div class="topBtns">
-        <button id="btnHome" class="btn ghost" type="button">🏠 Home</button>
-        <button id="btnReset" class="btn" type="button">Reset</button>
+      <button id="muteBtnStart" class="mute-btn" aria-pressed="false" aria-label="Sound on">🔊 Sound</button>
+    </div>
 
-        <label class="toggle">
-          <input id="toggleSound" type="checkbox" />
-          <span>Sound</span>
-        </label>
+    <div class="start-heroes" aria-hidden="true">
+      <img class="start-char" src="assets/characters/willow.png" alt="Willow" />
+      <img class="start-char" src="assets/characters/raven.png" alt="Raven" />
+    </div>
 
-        <label class="toggle">
-          <input id="toggleHaptics" type="checkbox" />
-          <span>Haptics</span>
-        </label>
-      </div>
-    </header>
+    <div class="start-controls">
+      <label class="control">
+        <span>Level</span>
+        <select id="levelSelect" aria-label="Choose a level"></select>
+      </label>
 
-    <!-- HOME SCREEN -->
-    <section id="screenHome" class="panel screen">
-      <div class="cardPanel">
-        <h2 class="panelTitle">Choose your cozy game</h2>
+      <button id="startBtn" class="primary-btn">Let’s Play</button>
+    </div>
 
-        <div class="grid2">
-          <div class="field">
-            <label for="modeSelect" class="label">Mode</label>
-            <select id="modeSelect" class="select">
-              <option value="solo">Single-player vs Raven</option>
-              <option value="two">Two players</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="difficultySelect" class="label">Difficulty</label>
-            <select id="difficultySelect" class="select">
-              <option value="play">Play (silly + random)</option>
-              <option value="learn">Learn (gentle helper)</option>
-              <option value="win">Win (tries its best)</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="levelSelect" class="label">Level look</label>
-            <select id="levelSelect" class="select">
-              <option value="1">Level 1 — Classic seal</option>
-              <option value="2">Level 2 — Alternate seal</option>
-              <option value="3">Level 3 — Alternate seal</option>
-            </select>
-            <p class="smallHint">Tip: Add <code>assets/seal-level2.png</code> etc. to change the card front per level.</p>
-          </div>
-
-          <div class="field">
-            <label class="label">Who goes first?</label>
-            <div class="row">
-              <button id="firstFeather" class="pill" type="button">Feather first</button>
-              <button id="firstCookie" class="pill" type="button">Cookie first</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="ctaRow">
-          <button id="btnStart" class="btn primary" type="button">Let’s Play</button>
-        </div>
-
-        <p class="note">Sensory-safe: no timers, no pressure. You can always reset or go back home.</p>
-      </div>
-    </section>
-
-    <!-- GAME SCREEN -->
-    <section id="screenGame" class="panel screen hidden" aria-label="Game screen">
-      <div class="statusWrap">
-        <div id="status" class="status" aria-live="polite">Tap a card to begin.</div>
-
-        <!-- Screen-reader priority announcements -->
-        <div id="srAnnounce" class="sr-only" aria-live="assertive"></div>
-      </div>
-
-      <div class="board" id="board" role="grid" aria-label="Tic tac toe board"></div>
-
-      <div class="hint" id="hint">
-        Cards flip to reveal your symbol — the seal stays on the front only.
-      </div>
-
-      <div class="bottomRow">
-        <button id="btnExit" class="btn ghost" type="button">← Exit to Home</button>
-      </div>
-    </section>
+    <p class="tip">Grown-up tip: start with 4 cards.</p>
   </main>
 
-  <script src="game.js"></script>
+  <!-- GAME SCREEN -->
+  <section id="game-screen" class="hidden">
+    <div class="top-bar">
+      <button id="exitBtn" class="secondary-btn" aria-label="Return to start screen">⬅ Home</button>
+
+      <div id="levelLabel" class="pill">Level 1</div>
+      <div id="tries" class="pill">Tries: 0</div>
+      <div id="matches" class="pill">Matches: 0</div>
+
+      <button id="muteBtn" class="mute-btn" aria-pressed="false" aria-label="Sound on">🔊 Sound</button>
+    </div>
+
+    <div class="board-wrap">
+      <div id="game-board" class="game-board" aria-label="Memory game board"></div>
+    </div>
+  </section>
+
+  <!-- WIN SCREEN -->
+  <section id="win-screen" class="win-screen hidden" role="dialog" aria-modal="true" aria-label="Win screen">
+    <div class="win-card">
+      <h2 class="win-title">You did it!</h2>
+      <p id="winMessage" class="win-msg">Great job!</p>
+
+      <!-- Optional: Raven dance GIF on win screen -->
+      <!-- <img class="win-img" src="assets/characters/raven-dance.gif" alt="Raven dancing" /> -->
+
+      <div class="win-actions">
+        <button id="playAgainBtn" class="secondary-btn">Play Again</button>
+        <button id="nextLevelBtn" class="primary-btn">Next Level</button>
+      </div>
+
+      <p id="difficultyNote" class="tiny-note"></p>
+    </div>
+  </section>
+
+  <script type="module" src="js/game.js"></script>
 </body>
 </html>
