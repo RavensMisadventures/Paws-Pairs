@@ -1,129 +1,84 @@
 
+/* COZY MATCH FINAL STYLES */
+
+/* Root Colors */
+:root {
+  --sage: #c7d4c1;
+  --cream: #fbf7ef;
+  --terra: #c07a59;
+  --ink: #1c1c1c;
+  --shadow: rgba(0, 0, 0, 0.12);
+  --cardBorder: rgba(192, 122, 89, 0.35);
+  --cardSize: clamp(64px, 18vw, 110px);
+  --cardGap: clamp(0.5rem, 1.8vw, 1.2rem);
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #b5d0de, #e7f0ea);
-  color: #2c2c2c;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #5a8aa0;
-  padding: 0.5rem 1rem;
-  color: white;
-}
-
-.logo-title {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logo {
-  width: 48px;
-  height: 48px;
-}
-
-.top-buttons button {
-  margin-left: 0.5rem;
-  padding: 0.4rem 0.75rem;
-  border: none;
-  border-radius: 6px;
-  background-color: #ffffffaa;
-  color: #333;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.top-buttons button.active {
-  background-color: #ffe5b4;
-}
-
-main {
-  padding: 2rem;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(circle at 15% 10%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 55%),
+              linear-gradient(#bfd4e0, #e6f0ea);
   text-align: center;
+  color: var(--ink);
 }
 
-.start-screen, #win-message {
-  margin: auto;
-  padding: 1.5rem;
-  background: #ffffffdd;
-  border-radius: 12px;
-  max-width: 400px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* Layout */
+#game-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
 }
 
+/* Cozy Wood Board */
 .board {
   display: grid;
-  gap: 12px;
   justify-content: center;
-  margin-top: 2rem;
+  align-content: center;
+  gap: var(--cardGap);
+  padding: 2rem;
+  border-radius: 24px;
+  background: url('assets/wood.jpg') center/cover, linear-gradient(145deg, #b08d6f, #d4b79e);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1), 0 6px 12px rgba(0, 0, 0, 0.15);
+  max-width: 94vw;
+  margin: 0 auto;
 }
 
+/* Cards */
 .card {
-  width: 100px;
-  height: 100px;
-  perspective: 800px;
+  width: var(--cardSize);
+  height: var(--cardSize);
+  border-radius: 16px;
+  perspective: 1000px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
   cursor: pointer;
 }
 
-.card-inner {
-  width: 100%;
-  height: 100%;
-  transition: transform 0.6s;
-  transform-style: preserve-3d;
-  position: relative;
-}
-
-.card.flipped .card-inner {
+.card.flipped {
   transform: rotateY(180deg);
 }
 
 .card-front, .card-back {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
   position: absolute;
-  width: 100%;
-  height: 100%;
   backface-visibility: hidden;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.card-front img, .card-back img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5ebdd;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .card-back {
   transform: rotateY(180deg);
 }
 
-.hidden {
-  display: none;
-}
-
-
-/* RESPONSIVE BOARD LAYOUT */
-#game-board {
-  display: grid;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  max-width: 90vw;
-}
-
-@media (min-width: 600px) {
-  #game-board {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  }
-}
-
-@media (min-width: 900px) {
-  #game-board {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
+.card img {
+  max-width: 75%;
+  max-height: 75%;
+  pointer-events: none;
 }
