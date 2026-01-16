@@ -1,32 +1,86 @@
 
 :root {
-  --card-size: clamp(64px, 14vw, 110px);
-  --card-gap: clamp(.35rem, 1.2vw, .65rem);
+  --sage: #c7d4c1;
+  --cream: #fbf7ef;
+  --terra: #c07a59;
+  --ink: #1c1c1c;
+  --shadow: rgba(0, 0, 0, 0.12);
+  --cardBorder: rgba(192, 122, 89, 0.35);
+  --cardSize: clamp(64px, 14vw, 110px);
+  --cardGap: clamp(0.35rem, 1.2vw, 0.65rem);
 }
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: url('assets/images/cozy_game_background.png') no-repeat center center fixed;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--ink);
+  background: url("./assets/cozy_game_background.png") no-repeat center center fixed;
   background-size: cover;
   text-align: center;
   padding: 1rem;
-  color: #4b3f3f;
 }
 
 h1 {
   font-size: 2rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--terra);
 }
 
-#game-board {
+button {
+  font: inherit;
+  padding: 0.5em 1em;
+  margin: 0.5em;
+  border: none;
+  border-radius: 0.5em;
+  background-color: var(--terra);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #a56244;
+}
+
+.board {
   display: grid;
-  grid-template-columns: repeat(auto-fit, var(--card-size));
-  gap: var(--card-gap);
+  grid-template-columns: repeat(auto-fit, minmax(var(--cardSize), 1fr));
+  gap: var(--cardGap);
   justify-content: center;
-  padding: 1rem;
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+.tile {
+  width: var(--cardSize);
+  height: var(--cardSize);
+  background-color: var(--cream);
+  border-radius: 1rem;
+  box-shadow: 0 0.3rem 0.6rem var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.tile img {
+  width: 90%;
+  height: auto;
+  object-fit: contain;
+}
+
+.hidden {
+  display: none !important;
+}
+
+footer {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: var(--ink);
 }
