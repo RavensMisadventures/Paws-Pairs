@@ -1,142 +1,105 @@
-/* GENERAL STYLES */
-:root {
-  --tile-size: clamp(80px, 14vw, 140px);
-  --gap-size: clamp(8px, 2vw, 16px);
-  --board-padding: clamp(16px, 4vw, 32px);
-  --ink: #3e2c23;
-  --button-bg: #f4d8b4;
-  --button-bg-hover: #efc28c;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: url("../assets/cozy_game_background.png") no-repeat center center fixed;
-  background-size: cover;
-  color: var(--ink);
-  text-align: center;
-  padding: 1rem;
-  min-height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom, #b5d0de, #e7f0ea);
+  color: #2c2c2c;
 }
 
-/* START SCREEN */
-.start-screen {
+.topbar {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background: #5a8aa0;
+  padding: 0.5rem 1rem;
+  color: white;
+}
+
+.logo-title {
+  display: flex;
   align-items: center;
   gap: 1rem;
-  margin-top: 3rem;
 }
 
-.start-screen h1 {
-  font-size: 2.5rem;
-  color: var(--ink);
+.logo {
+  width: 48px;
+  height: 48px;
 }
 
-.start-screen p {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.character-selection {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.character-btn {
-  border: none;
-  background: none;
-  cursor: pointer;
-  outline: none;
-  transition: transform 0.2s ease;
-}
-
-.character-btn:hover {
-  transform: scale(1.1);
-}
-
-.character-btn img {
-  width: clamp(100px, 20vw, 200px);
-  height: auto;
-  object-fit: contain;
-}
-
-/* START BUTTON */
-#start-game {
-  padding: 0.6rem 1.4rem;
-  font-size: 1rem;
-  background-color: var(--button-bg);
+.top-buttons button {
+  margin-left: 0.5rem;
+  padding: 0.4rem 0.75rem;
   border: none;
   border-radius: 6px;
+  background-color: #ffffffaa;
+  color: #333;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
 }
 
-#start-game:hover {
-  background-color: var(--button-bg-hover);
+.top-buttons button.active {
+  background-color: #ffe5b4;
 }
 
-/* GAME BOARD */
+main {
+  padding: 2rem;
+  text-align: center;
+}
+
+.start-screen, #win-message {
+  margin: auto;
+  padding: 1.5rem;
+  background: #ffffffdd;
+  border-radius: 12px;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
 .board {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--tile-size), 1fr));
-  gap: var(--gap-size);
-  padding: var(--board-padding);
+  gap: 12px;
   justify-content: center;
-  max-width: 90vw;
-  margin: 0 auto;
+  margin-top: 2rem;
 }
 
-.tile {
-  width: var(--tile-size);
-  height: var(--tile-size);
-  cursor: pointer;
-  position: relative;
+.card {
+  width: 100px;
+  height: 100px;
   perspective: 800px;
+  cursor: pointer;
 }
 
-.tile-inner {
+.card-inner {
   width: 100%;
   height: 100%;
   transition: transform 0.6s;
   transform-style: preserve-3d;
+  position: relative;
 }
 
-.tile.flipped .tile-inner {
+.card.flipped .card-inner {
   transform: rotateY(180deg);
 }
 
-.tile-front,
-.tile-back {
+.card-front, .card-back {
   position: absolute;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
 }
 
-.tile-front img,
-.tile-back img {
+.card-front img, .card-back img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.tile-back {
+.card-back {
   transform: rotateY(180deg);
 }
 
-/* FOOTER */
-footer {
-  margin-top: 2rem;
-  font-size: 0.85rem;
-  color: var(--ink);
+.hidden {
+  display: none;
 }
