@@ -8,10 +8,11 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="start-screen">
+  <div id="start-screen" class="start-screen">
     <h1>Paws & Pairs</h1>
     <p>Select your character to begin:</p>
-    <div class="character-selection">
+    <div id="character-buttons" class="character-selection">
+      <!-- These buttons are handled by JS, so only layout matters -->
       <button class="character-btn" data-character="raven">
         <img src="assets/characters/raven.png" alt="Raven">
       </button>
@@ -20,6 +21,10 @@
       </button>
     </div>
     <button id="start-game">Let’s Play</button>
+  </div>
+
+  <div id="game-board" style="display: none;">
+    <!-- Game board will be injected here by JS -->
   </div>
 
   <script src="game.js"></script>
