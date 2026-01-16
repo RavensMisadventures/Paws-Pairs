@@ -1,76 +1,27 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Paws & Pairs</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-  <!-- START SCREEN -->
-  <main id="start-screen" class="start-screen">
-    <div class="start-top">
-      <div style="text-align:left">
-        <h1 class="title">Paws &amp; Pairs</h1>
-        <p class="subtitle">Flip cards and find matching pairs.</p>
-      </div>
-
-      <button id="muteBtnStart" class="mute-btn" aria-pressed="false" aria-label="Sound on">🔊 Sound</button>
+  <div class="start-screen">
+    <h1>Paws & Pairs</h1>
+    <p>Select your character to begin:</p>
+    <div class="character-selection">
+      <button class="character-btn" data-character="raven">
+        <img src="assets/characters/raven.png" alt="Raven">
+      </button>
+      <button class="character-btn" data-character="willow">
+        <img src="assets/characters/willow.png" alt="Willow">
+      </button>
     </div>
+    <button id="start-game">Let’s Play</button>
+  </div>
 
-    <div class="start-heroes" aria-hidden="true">
-      <img class="start-char" src="assets/characters/willow.png" alt="Willow" />
-      <img class="start-char" src="assets/characters/raven.png" alt="Raven" />
-    </div>
-
-    <div class="start-controls">
-      <label class="control">
-        <span>Level</span>
-        <select id="levelSelect" aria-label="Choose a level"></select>
-      </label>
-
-      <button id="startBtn" class="primary-btn">Let’s Play</button>
-    </div>
-
-    <p class="tip">Grown-up tip: start with 4 cards.</p>
-  </main>
-
-  <!-- GAME SCREEN -->
-  <section id="game-screen" class="hidden">
-    <div class="top-bar">
-      <button id="exitBtn" class="secondary-btn" aria-label="Return to start screen">⬅ Home</button>
-
-      <div id="levelLabel" class="pill">Level 1</div>
-      <div id="tries" class="pill">Tries: 0</div>
-      <div id="matches" class="pill">Matches: 0</div>
-
-      <button id="muteBtn" class="mute-btn" aria-pressed="false" aria-label="Sound on">🔊 Sound</button>
-    </div>
-
-    <div class="board-wrap">
-      <div id="game-board" class="game-board" aria-label="Memory game board"></div>
-    </div>
-  </section>
-
-  <!-- WIN SCREEN -->
-  <section id="win-screen" class="win-screen hidden" role="dialog" aria-modal="true" aria-label="Win screen">
-    <div class="win-card">
-      <h2 class="win-title">You did it!</h2>
-      <p id="winMessage" class="win-msg">Great job!</p>
-
-      <!-- Optional: Raven dance GIF on win screen -->
-      <!-- <img class="win-img" src="assets/characters/raven-dance.gif" alt="Raven dancing" /> -->
-
-      <div class="win-actions">
-        <button id="playAgainBtn" class="secondary-btn">Play Again</button>
-        <button id="nextLevelBtn" class="primary-btn">Next Level</button>
-      </div>
-
-      <p id="difficultyNote" class="tiny-note"></p>
-    </div>
-  </section>
-
-  <script type="module" src="js/game.js"></script>
+  <script src="game.js"></script>
 </body>
 </html>
