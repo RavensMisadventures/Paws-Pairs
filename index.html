@@ -2,29 +2,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Paws & Pairs</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-  <div id="start-screen" class="start-screen">
+  <div class="start-screen">
     <h1>Paws & Pairs</h1>
-    <p>Select your character to begin:</p>
-    <div id="character-buttons" class="character-selection">
-      <!-- These buttons are handled by JS, so only layout matters -->
-      <button class="character-btn" data-character="raven">
-        <img src="assets/characters/raven.png" alt="Raven">
-      </button>
-      <button class="character-btn" data-character="willow">
-        <img src="assets/characters/willow.png" alt="Willow">
-      </button>
+    <div class="controls">
+      <label for="level-select">Choose Level:</label>
+      <select id="level-select">
+        <option value="2">Level 1 – 4 cards</option>
+        <option value="3">Level 2 – 6 cards</option>
+        <option value="4">Level 3 – 8 cards</option>
+        <option value="6">Level 4 – 12 cards</option>
+      </select>
+      <div class="toggle-group">
+        <label><input type="checkbox" id="sound-toggle" checked /> Sound</label>
+        <label><input type="checkbox" id="vibrate-toggle" checked /> Vibrate</label>
+      </div>
     </div>
     <button id="start-game">Let’s Play</button>
   </div>
 
-  <div id="game-board" style="display: none;">
-    <!-- Game board will be injected here by JS -->
+  <div id="game-screen" class="hidden">
+    <button id="exit-game" class="exit-button">Exit</button>
+    <div id="game-board" class="board"></div>
+    <div id="win-message" class="hidden">
+      <p>🎉 Great job, you win!</p>
+      <button id="play-again">Play Again</button>
+      <button id="go-home">Home</button>
+    </div>
   </div>
 
   <script src="game.js"></script>
