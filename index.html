@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Raven’s Cozy Match</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="top-bar">
+    <button onclick="goHome()">🏠 Home</button>
+    <button onclick="resetGame()">🔄 Reset</button>
+    <button onclick="toggleSound()">🔈 Sound</button>
+    <button onclick="toggleVibration()">📳 Vibrate</button>
+  </div>
+
+  <h1>Raven’s Cozy Match</h1>
+  <div class="level-select">
+    <label for="level">Level:</label>
+    <select id="level">
+      <option value="4">Level 1 – 4 cards</option>
+      <option value="6">Level 2 – 6 cards</option>
+      <option value="8">Level 3 – 8 cards</option>
+      <option value="12">Level 4 – 12 cards</option>
+    </select>
+    <button onclick="startGame()">Let’s Play</button>
+  </div>
+
+  <div id="game-board" class="game-board"></div>
+
+  <div id="win-message" class="hidden">
+    <p>🎉 Great job, you matched them all!</p>
+    <button onclick="startGame()">Play Again</button>
+    <button onclick="goHome()">Exit</button>
+  </div>
+
+  <script src="js/game.js"></script>
+</body>
+</html>
