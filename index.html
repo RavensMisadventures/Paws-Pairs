@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,41 +9,30 @@
 </head>
 <body>
   <header>
-    <img src="assets/characters/raven.png" alt="Raven" class="logo" />
-    <div class="title-block">
+    <div style="display:flex;align-items:center;">
+      <img src="assets/characters/raven.png" alt="Raven" />
       <h1>Raven’s Cozy Match</h1>
-      <p>Flip a card to find a cozy pair.</p>
     </div>
-    <div class="controls">
-      <button id="homeBtn">🏠 Home</button>
-      <button id="resetBtn">🧊 Reset</button>
-      <button id="soundBtn">🔊 Sound</button>
-      <button id="vibrateBtn">📳 Vibrate</button>
+    <div>
+      <button id="soundToggle">🔈 Sound</button>
     </div>
   </header>
 
-  <main>
-    <section class="start-screen">
-      <h2>Choose your cozy game</h2>
-      <label for="level-select">Level:</label>
-      <select id="level-select">
-        <option value="4">Level 1 — 4 cards</option>
-        <option value="6">Level 2 — 6 cards</option>
-        <option value="8">Level 3 — 8 cards</option>
-        <option value="12">Level 4 — 12 cards</option>
+  <div class="controls">
+    <p>Choose your cozy game</p>
+    <label>Level:
+      <select id="levelSelect">
+        <option value="2">Level 1 — 4 cards</option>
+        <option value="3" selected>Level 2 — 6 cards</option>
+        <option value="4">Level 3 — 8 cards</option>
+        <option value="6">Level 4 — 12 cards</option>
       </select>
-      <button id="startBtn">Let’s Play</button>
-    </section>
+    </label>
+    <button onclick="createBoard(currentLevel)">Let’s Play</button>
+  </div>
 
-    <section id="game-board" class="board hidden"></section>
-    <div id="win-message" class="hidden">
-      🎉 Great job, you matched them all! <br>
-      <button id="playAgainBtn">Play Again</button>
-      <button id="exitBtn">Exit</button>
-    </div>
-  </main>
+  <div class="board"></div>
 
-  <audio id="flipSound" src="assets/sounds/flip.mp3" preload="auto"></audio>
   <script src="js/game.js"></script>
 </body>
 </html>

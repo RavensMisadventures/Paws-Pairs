@@ -1,110 +1,82 @@
 
-const board = document.getElementById("game-board");
-const levelSelect = document.getElementById("level-select");
-const startBtn = document.getElementById("startBtn");
-const resetBtn = document.getElementById("resetBtn");
-const homeBtn = document.getElementById("homeBtn");
-const winMessage = document.getElementById("win-message");
-const playAgainBtn = document.getElementById("playAgainBtn");
-const exitBtn = document.getElementById("exitBtn");
-const flipSound = document.getElementById("flipSound");
+let board = document.querySelector('.board');
+let soundEnabled = true;
+const flipSound = new Audio('assets/sounds/flip.mp3');
+const winSound = new Audio('assets/sounds/win.mp3');
 
-let cards = [];
-let flipped = [];
-let matched = [];
-
-const items = [
-  "bo", "raven", "salem", "willow", "cat-bed", "cookie", "feather", "leaf", "mouse", "rock", "security-blanket", "sock"
-];
+const items = ['sock', 'cookie', 'feather', 'mouse', 'leaf', 'rock'];
+let currentLevel = 4;
 
 function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)];
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+  return array.sort(() => 0.5 - Math.random());
 }
 
-function generateCards(count) {
-  const selected = shuffle([...items]).slice(0, count / 2);
-  const pairItems = shuffle([...selected, ...selected]);
+function createBoard(level) {
+  board.innerHTML = '';
+  let totalTiles = level * 2;
+  let selected = shuffle(items).slice(0, level);
+  let gameItems = shuffle([...selected, ...selected]);
+  board.style.gridTemplateColumns = `repeat(${Math.ceil(Math.sqrt(totalTiles))}, 1fr)`;
 
-  board.innerHTML = "";
-  board.classList.remove("hidden");
-  board.style.gridTemplateColumns = `repeat(${Math.ceil(Math.sqrt(count))}, 1fr)`;
-
-  cards = [];
-  flipped = [];
-  matched = [];
-
-  pairItems.forEach(item => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-
-    const front = document.createElement("img");
-    front.src = `assets/items/${item}.png`;
-    front.classList.add("front");
-
-    const back = document.createElement("div");
-    back.classList.add("back");
-
-    card.appendChild(front);
-    card.appendChild(back);
-
-    card.dataset.item = item;
-    card.addEventListener("click", () => flipCard(card));
-
-    board.appendChild(card);
-    cards.push(card);
+  gameItems.forEach(item => {
+    let tile = document.createElement('div');
+    tile.className = 'tile';
+    tile.dataset.item = item;
+    tile.innerHTML = '<img src="assets/backs/raven-seal.png" alt="back">';
+    tile.addEventListener('click', () => flipTile(tile));
+    board.appendChild(tile);
   });
 }
 
-function flipCard(card) {
-  if (flipped.includes(card) || matched.includes(card)) return;
+let flipped = [];
 
-  card.querySelector(".front").style.zIndex = "2";
-  card.querySelector(".back").style.zIndex = "1";
-  flipped.push(card);
-  flipSound.play();
+function flipTile(tile) {
+  if (flipped.length >= 2 || tile.classList.contains('matched')) return;
+
+  const img = document.createElement('img');
+  img.src = `assets/items/${tile.dataset.item}.png`;
+  tile.innerHTML = '';
+  tile.appendChild(img);
+
+  if (soundEnabled) flipSound.play();
+
+  flipped.push(tile);
 
   if (flipped.length === 2) {
-    setTimeout(() => {
-      const [first, second] = flipped;
-      if (first.dataset.item === second.dataset.item) {
-        matched.push(first, second);
-        if (matched.length === cards.length) {
-          winMessage.classList.remove("hidden");
-        }
-      } else {
-        first.querySelector(".front").style.zIndex = "0";
-        second.querySelector(".front").style.zIndex = "0";
-      }
+    const [a, b] = flipped;
+    if (a.dataset.item === b.dataset.item) {
+      a.classList.add('matched');
+      b.classList.add('matched');
       flipped = [];
-    }, 800);
+      checkWin();
+    } else {
+      setTimeout(() => {
+        a.innerHTML = '<img src="assets/backs/raven-seal.png" alt="back">';
+        b.innerHTML = '<img src="assets/backs/raven-seal.png" alt="back">';
+        flipped = [];
+      }, 1000);
+    }
   }
 }
 
-startBtn.addEventListener("click", () => {
-  const count = parseInt(levelSelect.value);
-  winMessage.classList.add("hidden");
-  generateCards(count);
+function checkWin() {
+  if (document.querySelectorAll('.tile:not(.matched)').length === 0) {
+    if (soundEnabled) winSound.play();
+    const dance = document.createElement('img');
+    dance.src = 'assets/characters/raven-dance.gif';
+    dance.style.marginTop = '2rem';
+    document.body.appendChild(dance);
+  }
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+}
+
+document.getElementById('soundToggle').addEventListener('click', toggleSound);
+document.getElementById('levelSelect').addEventListener('change', (e) => {
+  currentLevel = parseInt(e.target.value);
+  createBoard(currentLevel);
 });
 
-resetBtn.addEventListener("click", () => {
-  board.innerHTML = "";
-  winMessage.classList.add("hidden");
-});
-
-homeBtn.addEventListener("click", () => {
-  location.reload();
-});
-
-playAgainBtn.addEventListener("click", () => {
-  const count = parseInt(levelSelect.value);
-  winMessage.classList.add("hidden");
-  generateCards(count);
-});
-
-exitBtn.addEventListener("click", () => {
-  location.reload();
-});
+createBoard(currentLevel);

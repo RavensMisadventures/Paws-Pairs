@@ -1,93 +1,62 @@
 
-:root {
-  --bg: linear-gradient(to bottom, #8cb0b5, #e7f1e4);
-  --board-bg: repeating-linear-gradient(45deg, #996633, #996633 10px, #b37700 10px, #b37700 20px);
-}
-
 body {
   margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg);
-  color: #333;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(#6d94a6, #e9f4ec);
+  color: #1c1c1c;
   text-align: center;
 }
-
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #5e8fa2;
+  background-color: #5d8b9f;
   padding: 1rem 2rem;
-  color: white;
-  border-bottom: 4px solid #49788c;
-}
-
-.logo {
-  height: 64px;
-}
-
-.controls button {
-  margin-left: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  border: none;
-  background-color: white;
-  cursor: pointer;
-}
-
-.start-screen {
-  margin-top: 2rem;
-}
-
-.board {
-  display: grid;
-  justify-content: center;
-  gap: 1rem;
-  background: var(--board-bg);
-  padding: 1.5rem;
-  border-radius: 16px;
-  max-width: 90vw;
-  margin: 2rem auto;
-}
-
-.card {
-  width: 110px;
-  height: 110px;
-  background-color: #eee0c9;
-  border-radius: 12px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+header img {
+  height: 64px;
+  border-radius: 12px;
+  margin-right: 1rem;
+}
+header h1 {
+  font-size: 1.75rem;
+  margin: 0;
+}
+button, select {
+  font: inherit;
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: #ffe3b3;
   cursor: pointer;
-  position: relative;
-  perspective: 1000px;
-  transition: transform 0.4s ease;
 }
-
-.card img {
+button:hover {
+  background-color: #ffd580;
+}
+.board {
+  margin: 2rem auto;
+  display: grid;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.tile {
+  width: 90px;
+  height: 90px;
+  background: #eeddbc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+.tile img {
   width: 80%;
-  height: 80%;
-  object-fit: contain;
-}
-
-.card .back {
-  background: url('../assets/backs/raven-seal.png') center center no-repeat;
-  background-size: contain;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  backface-visibility: hidden;
-}
-
-.hidden {
-  display: none;
-}
-
-
-/* Raven dance GIF on win */
-.raven-dance {
-  display: block;
-  margin: 1rem auto 0;
-  max-width: 160px;
   height: auto;
+}
+.controls {
+  margin: 1rem 0;
 }
