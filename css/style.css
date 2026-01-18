@@ -1,1 +1,42 @@
-body { font-family: sans-serif; background: #e4eee4; }
+body {
+  font-family: sans-serif;
+  background: linear-gradient(to bottom, #b9d7dd, #e8f3eb);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+header {
+  background-color: #558097;
+  color: white;
+  padding: 1rem;
+}
+.controls {
+  margin-top: 0.5rem;
+}
+main {
+  padding: 2rem;
+}
+.board {
+  display: grid;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.card {
+  width: 100px;
+  height: 100px;
+  background-color: #deb887;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.card.flipped {
+  background-color: #fff3e0;
+}
+.hidden {
+  display: none;
+}

@@ -1,1 +1,34 @@
-<!DOCTYPE html><html><head><title>Raven’s Cozy Match</title></head><body><h1>Welcome to Raven’s Cozy Match</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Raven’s Cozy Match</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Raven’s Cozy Match</h1>
+    <div class="controls">
+      <button onclick="location.reload()">🔁 Reset</button>
+    </div>
+  </header>
+  <main>
+    <section id="start-screen">
+      <label for="level">Choose Level:</label>
+      <select id="level">
+        <option value="4">Level 1 — 4 cards</option>
+        <option value="6">Level 2 — 6 cards</option>
+        <option value="8">Level 3 — 8 cards</option>
+      </select>
+      <button onclick="startGame()">Let’s Play</button>
+    </section>
+    <section id="game-board" class="board hidden"></section>
+    <div id="win-message" class="hidden">
+      🎉 Great job, you matched them all!
+      <button onclick="startGame()">Play Again</button>
+    </div>
+  </main>
+  <script src="js/game.js"></script>
+</body>
+</html>
