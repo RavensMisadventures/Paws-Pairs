@@ -2,42 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Raven's Cozy Match</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raven’s Cozy Match</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header class="top-bar">
-    <div class="logo-area">
-      <img src="assets/characters/raven.png" alt="Raven" class="logo-img">
-      <div class="game-title">Raven’s Cozy Quest</div>
+    <div class="logo-title">
+      <img src="assets/characters/raven.png" alt="Raven Logo" id="logo" />
+      <div>
+        <h1>Raven’s Cozy Match</h1>
+        <p class="subtitle">Flip a card to find a cozy pair.</p>
+      </div>
     </div>
     <div class="controls">
-      <button onclick="goHome()">🏡 Home</button>
-      <button onclick="resetGame()">🔄 Reset</button>
+      <button onclick="location.reload()">🔄 Reset</button>
       <button onclick="toggleSound()">🔊 Sound</button>
-      <button onclick="toggleVibration()">📳 Vibrate</button>
+      <button onclick="toggleVibrate()">📳 Vibrate</button>
     </div>
   </header>
 
-  <main>
-    <div class="game-settings">
+  <main class="game-container">
+    <section class="setup-panel">
       <h2>Choose your cozy game</h2>
-      <label for="levelSelect">Level:</label>
-      <select id="levelSelect">
+      <label for="level">Level:</label>
+      <select id="level">
         <option value="4">Level 1 — 4 cards</option>
         <option value="6">Level 2 — 6 cards</option>
         <option value="8">Level 3 — 8 cards</option>
         <option value="10">Level 4 — 10 cards</option>
         <option value="12">Level 5 — 12 cards</option>
-        <option value="16">Level 6 — 16 cards</option>
+        <option value="14">Level 6 — 14 cards</option>
       </select>
       <button onclick="startGame()">Let’s Play</button>
+    </section>
+    <section id="board" class="board"></section>
+    <div id="message" class="message"></div>
+    <div class="nav-buttons">
+      <button onclick="startGame()">Play Again</button>
+      <button onclick="window.location.href='https://ravensmisadventures.github.io/'">← Exit to Home</button>
     </div>
-    <div class="game-board" id="gameBoard"></div>
-    <div class="game-message" id="gameMessage"></div>
   </main>
 
-  <script src="game.js"></script>
+  <script src="js/game.js"></script>
 </body>
 </html>
