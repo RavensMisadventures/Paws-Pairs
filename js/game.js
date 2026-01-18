@@ -1,69 +1,110 @@
+
+const board = document.getElementById("game-board");
+const levelSelect = document.getElementById("level-select");
+const startBtn = document.getElementById("startBtn");
+const resetBtn = document.getElementById("resetBtn");
+const homeBtn = document.getElementById("homeBtn");
+const winMessage = document.getElementById("win-message");
+const playAgainBtn = document.getElementById("playAgainBtn");
+const exitBtn = document.getElementById("exitBtn");
+const flipSound = document.getElementById("flipSound");
+
+let cards = [];
+let flipped = [];
+let matched = [];
+
 const items = [
-  "cookie", "feather", "mouse", "sock", "cat-bed", "leaf", "rock", "security-blanket", "salem", "willow", "bo", "raven"
+  "bo", "raven", "salem", "willow", "cat-bed", "cookie", "feather", "leaf", "mouse", "rock", "security-blanket", "sock"
 ];
-let board = document.getElementById("board");
-let message = document.getElementById("message");
-let soundOn = true;
-let vibrateOn = true;
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(Math.random() * (i + 1)];
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 }
-function startGame() {
+
+function generateCards(count) {
+  const selected = shuffle([...items]).slice(0, count / 2);
+  const pairItems = shuffle([...selected, ...selected]);
+
   board.innerHTML = "";
-  message.textContent = "";
-  const level = parseInt(document.getElementById("level").value);
-  let chosen = shuffle(items).slice(0, level / 2);
-  let pairSet = shuffle([...chosen, ...chosen]);
-  board.style.gridTemplateColumns = `repeat(${Math.ceil(Math.sqrt(level))}, 1fr)`;
-  pairSet.forEach(name => {
-    const tile = document.createElement("div");
-    tile.className = "tile";
-    tile.dataset.name = name;
-    tile.addEventListener("click", () => flipTile(tile));
-    board.appendChild(tile);
+  board.classList.remove("hidden");
+  board.style.gridTemplateColumns = `repeat(${Math.ceil(Math.sqrt(count))}, 1fr)`;
+
+  cards = [];
+  flipped = [];
+  matched = [];
+
+  pairItems.forEach(item => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    const front = document.createElement("img");
+    front.src = `assets/items/${item}.png`;
+    front.classList.add("front");
+
+    const back = document.createElement("div");
+    back.classList.add("back");
+
+    card.appendChild(front);
+    card.appendChild(back);
+
+    card.dataset.item = item;
+    card.addEventListener("click", () => flipCard(card));
+
+    board.appendChild(card);
+    cards.push(card);
   });
 }
-let flipped = [];
-let lockBoard = false;
-function flipTile(tile) {
-  if (lockBoard || tile.classList.contains("revealed")) return;
-  const name = tile.dataset.name;
-  tile.innerHTML = `<img src="assets/items/${name}.png" alt="${name}" />`;
-  tile.classList.add("revealed");
-  flipped.push(tile);
+
+function flipCard(card) {
+  if (flipped.includes(card) || matched.includes(card)) return;
+
+  card.querySelector(".front").style.zIndex = "2";
+  card.querySelector(".back").style.zIndex = "1";
+  flipped.push(card);
+  flipSound.play();
+
   if (flipped.length === 2) {
-    lockBoard = true;
-    const [a, b] = flipped;
-    if (a.dataset.name === b.dataset.name) {
+    setTimeout(() => {
+      const [first, second] = flipped;
+      if (first.dataset.item === second.dataset.item) {
+        matched.push(first, second);
+        if (matched.length === cards.length) {
+          winMessage.classList.remove("hidden");
+        }
+      } else {
+        first.querySelector(".front").style.zIndex = "0";
+        second.querySelector(".front").style.zIndex = "0";
+      }
       flipped = [];
-      lockBoard = false;
-      checkWin();
-    } else {
-      setTimeout(() => {
-        a.classList.remove("revealed");
-        b.classList.remove("revealed");
-        a.innerHTML = "";
-        b.innerHTML = "";
-        flipped = [];
-        lockBoard = false;
-      }, 1000);
-    }
+    }, 800);
   }
 }
-function checkWin() {
-  const revealed = document.querySelectorAll(".tile.revealed").length;
-  const total = document.querySelectorAll(".tile").length;
-  if (revealed === total) {
-    message.textContent = "🎉 Great job, you matched them all!";
-  }
-}
-function toggleSound() {
-  soundOn = !soundOn;
-}
-function toggleVibrate() {
-  vibrateOn = !vibrateOn;
-}
+
+startBtn.addEventListener("click", () => {
+  const count = parseInt(levelSelect.value);
+  winMessage.classList.add("hidden");
+  generateCards(count);
+});
+
+resetBtn.addEventListener("click", () => {
+  board.innerHTML = "";
+  winMessage.classList.add("hidden");
+});
+
+homeBtn.addEventListener("click", () => {
+  location.reload();
+});
+
+playAgainBtn.addEventListener("click", () => {
+  const count = parseInt(levelSelect.value);
+  winMessage.classList.add("hidden");
+  generateCards(count);
+});
+
+exitBtn.addEventListener("click", () => {
+  location.reload();
+});

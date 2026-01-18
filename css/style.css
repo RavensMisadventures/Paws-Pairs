@@ -1,93 +1,93 @@
+
 :root {
-  --bg-top: #5c8692;
-  --bg-bottom: #eaf0e6;
-  --card-back: url('../assets/backs/raven-seal.png');
-  --board-bg: repeating-linear-gradient(
-    45deg,
-    #8b5e3c,
-    #8b5e3c 10px,
-    #a67c52 10px,
-    #a67c52 20px
-  );
-  --tile-size: clamp(80px, 12vw, 130px);
+  --bg: linear-gradient(to bottom, #8cb0b5, #e7f1e4);
+  --board-bg: repeating-linear-gradient(45deg, #996633, #996633 10px, #b37700 10px, #b37700 20px);
 }
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
-  color: #1c1c1c;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: #333;
+  text-align: center;
 }
-.top-bar {
+
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  background-color: #5e8fa2;
   padding: 1rem 2rem;
-  background: var(--bg-top);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  color: white;
+  border-bottom: 4px solid #49788c;
 }
-.logo-title {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+
+.logo {
+  height: 64px;
 }
-#logo {
-  width: 64px;
-  height: auto;
-  border-radius: 12px;
-}
-.subtitle {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #f5f5f5;
-}
+
 .controls button {
   margin-left: 0.5rem;
-  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: none;
+  background-color: white;
+  cursor: pointer;
 }
-.game-container {
-  padding: 2rem;
-  max-width: 700px;
-  width: 100%;
+
+.start-screen {
+  margin-top: 2rem;
 }
-.setup-panel {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
+
 .board {
   display: grid;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 1rem;
   background: var(--board-bg);
-  padding: 1rem;
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.tile {
-  width: var(--tile-size);
-  height: var(--tile-size);
-  background: var(--card-back) center/70% no-repeat, #d2a679;
+  padding: 1.5rem;
   border-radius: 16px;
-  box-shadow: inset 0 -3px 4px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: transform 0.3s ease;
+  max-width: 90vw;
+  margin: 2rem auto;
 }
-.tile.revealed img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 16px;
-}
-.message {
-  text-align: center;
-  font-weight: bold;
-  margin: 1rem 0;
-}
-.nav-buttons {
+
+.card {
+  width: 110px;
+  height: 110px;
+  background-color: #eee0c9;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  perspective: 1000px;
+  transition: transform 0.4s ease;
+}
+
+.card img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}
+
+.card .back {
+  background: url('../assets/backs/raven-seal.png') center center no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+}
+
+.hidden {
+  display: none;
+}
+
+
+/* Raven dance GIF on win */
+.raven-dance {
+  display: block;
+  margin: 1rem auto 0;
+  max-width: 160px;
+  height: auto;
 }
