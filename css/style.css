@@ -1,0 +1,33 @@
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(#496b7b, #385868);
+  color: white;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.card {
+  background: #c6a081;
+  border-radius: 16px;
+  padding-top: 100%;
+  position: relative;
+}
+
+.card img {
+  position: absolute;
+  inset: 10%;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+}

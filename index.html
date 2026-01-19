@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Raven's Paws Pairs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <h1>Raven’s Paws Pairs</h1>
+    </header>
+    <main class="stage">
+      <div id="startScreen" class="screen active">
+        <button class="level-btn" data-level="1">Level 1 (4 cards)</button>
+        <button class="level-btn" data-level="2">Level 2 (6 cards)</button>
+        <button class="level-btn" data-level="3">Level 3 (8 cards)</button>
+        <button class="level-btn" data-level="4">Level 4 (10 cards)</button>
+        <button class="level-btn" data-level="5">Level 5 (12 cards)</button>
+        <button class="level-btn" data-level="6">Level 6 (14 cards)</button>
+      </div>
+
+      <div id="gameScreen" class="screen">
+        <div id="cardGrid" class="grid"></div>
+      </div>
+    </main>
+
+    <div id="overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <h2>Great job!</h2>
+        <img src="assets/animations/raven-dance.gif" alt="Raven dancing" />
+        <button id="playAgainBtn">Play again</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/game.js"></script>
+</body>
+</html>
