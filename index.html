@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <title>Raven's Paws Pairs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
+
+  <!-- backup so .hidden works even if CSS fails -->
+  <style>
+    .hidden { display: none !important; }
+  </style>
+
+  <!-- point to css/style.css (your folder) -->
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <div class="app">
@@ -82,11 +89,12 @@
     </footer>
   </div>
 
-  <!-- Audio (update paths/filenames if yours are different) -->
+  <!-- Audio (change paths if your audio folder is different) -->
   <audio id="flipSound" src="audio/flip.mp3" preload="auto"></audio>
   <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
   <audio id="winSound" src="audio/win.mp3" preload="auto"></audio>
 
-  <script src="game.js"></script>
+  <!-- point to js/game.js (your folder) -->
+  <script src="js/game.js"></script>
 </body>
 </html>
