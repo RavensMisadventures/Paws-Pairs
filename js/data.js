@@ -1,1 +1,0 @@
-console.log('Level data initialized');
