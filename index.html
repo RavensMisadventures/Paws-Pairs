@@ -5,7 +5,6 @@
   <title>Raven's Paws Pairs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Main stylesheet in /css -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -28,11 +27,11 @@
         <button id="resetBtn" class="pill" type="button" title="Reset level">
           🔄 <span>Reset</span>
         </button>
-        <button id="soundToggle" class="pill" type="button" aria-pressed="true" title="Sound">
-          🔊 <span>Sound</span>
+        <button id="soundToggle" class="pill" type="button" aria-pressed="false" title="Sound">
+          🔇 <span>Sound</span>
         </button>
         <button id="vibrateToggle" class="pill" type="button" aria-pressed="false" title="Vibrate">
-          📳 <span>Vibrate</span>
+          📴 <span>Vibrate</span>
         </button>
       </div>
     </header>
@@ -48,24 +47,24 @@
               Level 1 <small>4 cards</small>
             </button>
             <button class="level-btn" data-level="2" type="button">
-              Level 2 <small>8 cards</small>
+              Level 2 <small>6 cards</small>
             </button>
             <button class="level-btn" data-level="3" type="button">
-              Level 3 <small>12 cards</small>
+              Level 3 <small>8 cards</small>
             </button>
             <button class="level-btn" data-level="4" type="button">
-              Level 4 <small>16 cards</small>
+              Level 4 <small>10 cards</small>
             </button>
             <button class="level-btn" data-level="5" type="button">
-              Level 5 <small>20 cards</small>
+              Level 5 <small>12 cards</small>
             </button>
             <button class="level-btn" data-level="6" type="button">
-              Level 6 <small>24 cards</small>
+              Level 6 <small>14 cards</small>
             </button>
           </div>
 
           <p class="hint">
-            Levels 1–3 use cozy items. Levels 4–6 add Raven, Willow, Salem, and Bo.
+            Levels 1–2 use cozy items. Levels 3–6 add Raven, Willow, Salem, Bo, and items.
           </p>
         </div>
 
@@ -105,12 +104,6 @@
     </footer>
   </div>
 
-  <!-- Optional sounds (if you have audio folder) -->
-  <audio id="flipSound" src="audio/flip.mp3" preload="auto"></audio>
-  <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
-  <audio id="winSound" src="audio/win.mp3" preload="auto"></audio>
-
-  <!-- Main game script in /js -->
   <script src="js/game.js"></script>
 </body>
 </html>
