@@ -1,40 +1,87 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Raven's Paws Pairs</title>
+  <title>Raven’s Paws Pairs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <h1>Raven’s Paws Pairs</h1>
-    </header>
-    <main class="stage">
-      <div id="startScreen" class="screen active">
-        <button class="level-btn" data-level="1">Level 1 (4 cards)</button>
-        <button class="level-btn" data-level="2">Level 2 (6 cards)</button>
-        <button class="level-btn" data-level="3">Level 3 (8 cards)</button>
-        <button class="level-btn" data-level="4">Level 4 (10 cards)</button>
-        <button class="level-btn" data-level="5">Level 5 (12 cards)</button>
-        <button class="level-btn" data-level="6">Level 6 (14 cards)</button>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-card" aria-hidden="true">
+        <img class="brand-img" src="assets/characters/raven.png" alt="Raven" />
       </div>
-
-      <div id="gameScreen" class="screen">
-        <div id="cardGrid" class="grid"></div>
+      <div class="brand-text">
+        <h1>Raven’s Paws Pairs</h1>
+        <p>Flip cards to find cozy matches — no timer, no rush.</p>
       </div>
-    </main>
+    </div>
 
-    <div id="overlay" class="overlay hidden">
-      <div class="overlay-card">
-        <h2>Great job!</h2>
-        <img src="assets/animations/raven-dance.gif" alt="Raven dancing" />
-        <button id="playAgainBtn">Play again</button>
+    <div class="controls">
+      <button id="homeBtn" class="pill" type="button" title="Home">
+        🏠 <span>Home</span>
+      </button>
+      <button id="resetBtn" class="pill" type="button" title="Reset">
+        🔄 <span>Reset</span>
+      </button>
+      <button id="soundBtn" class="pill" type="button" aria-pressed="false" title="Sound">
+        🔇 <span>Sound</span>
+      </button>
+      <button id="vibeBtn" class="pill" type="button" aria-pressed="false" title="Vibrate">
+        📴 <span>Vibrate</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="panel">
+      <!-- Start -->
+      <section id="startScreen" class="screen active" aria-label="Start screen">
+        <h2>Choose your cozy level</h2>
+        <div class="level-grid">
+          <button class="level-btn" data-level="1" type="button">Level 1 <small>4 cards</small></button>
+          <button class="level-btn" data-level="2" type="button">Level 2 <small>6 cards</small></button>
+          <button class="level-btn" data-level="3" type="button">Level 3 <small>8 cards</small></button>
+          <button class="level-btn" data-level="4" type="button">Level 4 <small>10 cards</small></button>
+          <button class="level-btn" data-level="5" type="button">Level 5 <small>12 cards</small></button>
+          <button class="level-btn" data-level="6" type="button">Level 6 <small>14 cards</small></button>
+        </div>
+        <p class="hint">Levels 1–2 use cozy items. Levels 3–6 use a random mix of items + Raven, Willow, Salem, and Bo.</p>
+      </section>
+
+      <!-- Game -->
+      <section id="gameScreen" class="screen" aria-label="Game screen">
+        <div class="hud">
+          <button id="backBtn" class="ghost" type="button">← Back</button>
+          <div class="chips">
+            <span class="chip" id="levelLabel">Level 1</span>
+            <span class="chip" id="movesLabel">Moves: 0</span>
+            <span class="chip" id="matchesLabel">Matches: 0/2</span>
+          </div>
+        </div>
+
+        <div id="cardGrid" class="grid" aria-label="Card grid"></div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Win overlay -->
+  <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Win dialog">
+    <div class="overlay-card">
+      <h2 id="overlayTitle">Great job!</h2>
+      <p id="overlayMsg">You found all the cozy pairs. 🐾</p>
+      <img class="overlay-gif" src="assets/animations/raven-dance.gif" alt="Raven dancing happily" />
+      <div class="overlay-actions">
+        <button id="playAgainBtn" class="pill primary" type="button">Play again</button>
+        <button id="backHomeBtn" class="pill" type="button">Back to start</button>
       </div>
     </div>
   </div>
+
+  <footer class="footer">
+    <small>Raven’s Misadventures • Paws Pairs</small>
+  </footer>
 
   <script src="js/game.js"></script>
 </body>
