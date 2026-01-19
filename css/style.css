@@ -15,7 +15,7 @@
   --accent:#ffd9a3;
   --accentText:#2b1f14;
 
-  --cardSize: clamp(78px, 10.5vw, 120px);
+  --cardSize: clamp(60px, 22vw, 110px);
   --gap: clamp(.55rem, 1.2vw, .9rem);
 }
 
@@ -43,7 +43,7 @@ body{
   gap: 16px;
 }
 
-/* Top bar like Raven’s Cozy Quest */
+/* Top bar */
 .topbar{
   display:flex;
   align-items:flex-start;
@@ -209,7 +209,7 @@ h2{
 }
 
 .chip{
-  background: var(--chip);
+  background: rgba(255,255,255,.20);
   border: 1px solid rgba(255,255,255,.22);
   padding: 8px 12px;
   border-radius: 999px;
@@ -219,23 +219,46 @@ h2{
   font-size: 13px;
 }
 
-/* Grid */
-.grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--cardSize), 1fr));
+/* --- 4-across responsive grid --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--gap);
-  justify-content:center;
-  align-items:center;
-  max-width: 860px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 6px 4px 4px;
+  padding: 10px 6px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 680px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 8px 4px;
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+
+  .face {
+    border-radius: 16px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
 }
 
 /* Cards */
 .card{
   position:relative;
   width:100%;
-  padding-top:100%;
+  padding-top:100%;   /* keep square cards */
   border:none;
   background: transparent;
   perspective: 900px;
@@ -362,7 +385,7 @@ h2{
   font-size: 12px;
 }
 
-/* Mobile */
+/* Small screens */
 @media (max-width: 680px){
   .levels{ grid-template-columns: 1fr; }
   .brand-card{ width:64px; height:64px; border-radius:16px; }
