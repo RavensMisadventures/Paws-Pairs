@@ -5,96 +5,100 @@
   <title>Raven's Paws Pairs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- backup so .hidden works even if CSS fails -->
-  <style>
-    .hidden { display: none !important; }
-  </style>
-
-  <!-- point to css/style.css (your folder) -->
+  <!-- Your repo has css/style.css -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="app">
-    <header class="site-header">
-      <div class="logo-title">
-        <img src="assets/characters/raven.png" alt="Raven" class="raven-avatar" />
-        <div>
-          <h1>Raven's Paws Pairs</h1>
-          <p class="subtitle">A cozy matching game</p>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-card">
+          <img class="brand-img" src="assets/characters/raven.png" alt="Raven" />
+        </div>
+        <div class="brand-text">
+          <h1>Raven’s Paws Pairs</h1>
+          <p>Flip cards to find your cozy matches.</p>
         </div>
       </div>
 
-      <button id="soundToggle" class="icon-button" aria-pressed="false" title="Toggle sound">
-        🔊
-      </button>
+      <div class="controls">
+        <button id="homeBtn" class="pill" type="button" title="Home">
+          🏠 <span>Home</span>
+        </button>
+        <button id="resetBtn" class="pill" type="button" title="Reset level">
+          🔄 <span>Reset</span>
+        </button>
+        <button id="soundToggle" class="pill" type="button" aria-pressed="true" title="Sound">
+          🔊 <span>Sound</span>
+        </button>
+        <button id="vibrateToggle" class="pill" type="button" aria-pressed="false" title="Vibrate">
+          📳 <span>Vibrate</span>
+        </button>
+      </div>
     </header>
 
-    <main>
-      <!-- Start Screen -->
-      <section id="startScreen" class="screen active">
-        <div class="start-card">
+    <main class="stage">
+      <section class="panel">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
           <h2>Choose your cozy level</h2>
-          <p class="start-text">
-            Flip cards to find matching pairs. Take your time, breathe, and enjoy each little win. 🐾
-          </p>
 
-          <div class="level-list">
-            <button class="level-button" data-level="1">Level 1 — Gentle Start (4 cards)</button>
-            <button class="level-button" data-level="2">Level 2 — Cozy Match (8 cards)</button>
-            <button class="level-button" data-level="3">Level 3 — Extra Snuggly (12 cards)</button>
-            <button class="level-button" data-level="4">Level 4 — Big Stretch (16 cards)</button>
-            <button class="level-button" data-level="5">Level 5 — Brave Tail (20 cards)</button>
-            <button class="level-button" data-level="6">Level 6 — Super Cozy (24 cards)</button>
+          <div class="levels">
+            <button class="level-btn" data-level="1" type="button">Level 1 <small>4 cards</small></button>
+            <button class="level-btn" data-level="2" type="button">Level 2 <small>8 cards</small></button>
+            <button class="level-btn" data-level="3" type="button">Level 3 <small>12 cards</small></button>
+            <button class="level-btn" data-level="4" type="button">Level 4 <small>16 cards</small></button>
+            <button class="level-btn" data-level="5" type="button">Level 5 <small>20 cards</small></button>
+            <button class="level-btn" data-level="6" type="button">Level 6 <small>24 cards</small></button>
           </div>
 
-          <p class="hint-text">
-            Tip: You can always go back to this screen if you need a break.
+          <p class="hint">
+            Levels 1–3 use cozy items. Levels 4–6 add Raven, Willow, Salem, and Bo.
           </p>
         </div>
-      </section>
 
-      <!-- Game Screen -->
-      <section id="gameScreen" class="screen">
-        <div class="game-header-row">
-          <button id="backToMenu" class="soft-button">&larr; Back to start</button>
-          <div class="status">
-            <span id="levelLabel">Level 1</span>
-            <span id="movesLabel">Moves: 0</span>
-            <span id="matchesLabel">Matches: 0</span>
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+          <div class="hud">
+            <div class="hud-left">
+              <button id="backBtn" class="ghost" type="button">← Back</button>
+            </div>
+            <div class="hud-right">
+              <span class="chip" id="levelLabel">Level 1</span>
+              <span class="chip" id="movesLabel">Moves: 0</span>
+              <span class="chip" id="matchesLabel">Matches: 0/2</span>
+            </div>
           </div>
-        </div>
 
-        <div id="cardGrid" class="card-grid" aria-label="Memory card grid"></div>
+          <div id="cardGrid" class="grid" aria-label="Memory cards"></div>
+        </div>
       </section>
     </main>
 
     <!-- Win Overlay -->
     <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true">
-      <div class="overlay-content">
+      <div class="overlay-card">
         <h2 id="overlayTitle">Great job!</h2>
-        <p id="overlayMessage">
-          You found all the cozy pairs. Raven is so proud of you. 💛
-        </p>
-        <img src="assets/animations/raven-dance.gif" alt="Raven dancing happily" class="overlay-gif" />
-
-        <div class="overlay-buttons">
-          <button id="playAgainButton" class="primary-button">Play this level again</button>
-          <button id="backHomeButton" class="soft-button">Back to start</button>
+        <p id="overlayMessage">You found all the cozy pairs.</p>
+        <img class="overlay-gif" src="assets/animations/raven-dance.gif" alt="Raven dance" />
+        <div class="overlay-actions">
+          <button id="playAgainBtn" class="pill primary" type="button">Play again</button>
+          <button id="backHomeBtn" class="pill" type="button">Back to start</button>
         </div>
       </div>
     </div>
 
-    <footer class="site-footer">
-      <small>Raven's Misadventures &mdash; Paws Pairs Matching Game</small>
+    <footer class="footer">
+      <small>Raven’s Misadventures • Paws Pairs</small>
     </footer>
   </div>
 
-  <!-- Audio (change paths if your audio folder is different) -->
+  <!-- Optional sounds (keep if you have /audio) -->
   <audio id="flipSound" src="audio/flip.mp3" preload="auto"></audio>
   <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
   <audio id="winSound" src="audio/win.mp3" preload="auto"></audio>
 
-  <!-- point to js/game.js (your folder) -->
+  <!-- Your repo has js/game.js -->
   <script src="js/game.js"></script>
 </body>
 </html>
