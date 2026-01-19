@@ -12,7 +12,7 @@
   --chip: rgba(255,255,255,.20);
   --shadow: rgba(0,0,0,.25);
 
-  --accent:#ffd9a3;     /* warm button like “Let’s Play” */
+  --accent:#ffd9a3;
   --accentText:#2b1f14;
 
   --cardSize: clamp(78px, 10.5vw, 120px);
@@ -43,7 +43,7 @@ body{
   gap: 16px;
 }
 
-/* Top bar like Cozy Quest */
+/* Top bar like Raven’s Cozy Quest */
 .topbar{
   display:flex;
   align-items:flex-start;
@@ -144,6 +144,7 @@ h2{
   font-size: clamp(22px, 2.2vw, 28px);
 }
 
+/* Level buttons */
 .levels{
   display:grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -262,7 +263,7 @@ h2{
   overflow:hidden;
 }
 
-/* Back (wood-ish) */
+/* Back (wood with Raven seal) */
 .back{
   background:
     radial-gradient(circle at 30% 22%, rgba(255,255,255,.28), transparent 55%),
@@ -354,6 +355,7 @@ h2{
   flex-wrap: wrap;
 }
 
+/* Footer */
 .footer{
   text-align:center;
   color: rgba(244,251,255,.72);
