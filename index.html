@@ -1,58 +1,41 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Raven’s Cozy Match</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="top-bar">
-    <div class="title-group">
-      <img src="assets/characters/raven.png" alt="Raven Icon" class="raven-icon"/>
-      <h1>Raven’s Cozy Match</h1>
-    </div>
+  <div class="header">
+    <img src="assets/characters/raven.png" alt="Raven Icon" />
+    <h1>Raven’s Cozy Match</h1>
     <div class="controls">
-      <button onclick="location.reload()">🏠 Home</button>
-      <button onclick="resetGame()">🔄 Reset</button>
+      <button onclick="location.reload()">🔁 Reset</button>
       <button onclick="toggleSound()">🔊 Sound</button>
-      <button onclick="toggleVibration()">📳 Vibrate</button>
+      <button onclick="navigator.vibrate(200)">📳 Vibrate</button>
     </div>
-  </header>
-
-  <main>
-    <section class="game-setup">
-      <h2>Choose your cozy game</h2>
-      <label for="character">Character:</label>
-      <select id="character">
-        <option value="raven">Raven</option>
-        <option value="willow">Willow</option>
-        <option value="salem">Salem</option>
-        <option value="bo">Bo</option>
-      </select>
-      <label for="level">Level:</label>
-      <select id="level">
-        <option value="2">Level 1 — 4 cards</option>
-        <option value="3">Level 2 — 6 cards</option>
-        <option value="4">Level 3 — 8 cards</option>
-        <option value="5">Level 4 — 10 cards</option>
-        <option value="6">Level 5 — 12 cards</option>
-        <option value="7">Level 6 — 14 cards</option>
-      </select>
-      <button onclick="startGame()">Let’s Play</button>
-    </section>
-
-    <section id="game-board" class="board"></section>
-
-    <div id="win-overlay" class="overlay hidden">
-      <img src="assets/characters/raven-dance.gif" alt="Raven Dancing" class="win-dance"/>
-      <h2>You did it! 🎉</h2>
-      <button onclick="startGame()">Play Again</button>
-    </div>
-  </main>
-
+  </div>
+  <div class="menu">
+    <h2>Choose your cozy game</h2>
+    Character:
+    <select id="character">
+      <option>Raven</option>
+      <option>Willow</option>
+      <option>Salem</option>
+    </select>
+    Level:
+    <select id="level">
+      <option>Level 1 — 4 cards</option>
+      <option>Level 2 — 6 cards</option>
+      <option>Level 3 — 8 cards</option>
+      <option>Level 4 — 10 cards</option>
+      <option>Level 5 — 12 cards</option>
+      <option>Level 6 — 16 cards</option>
+    </select>
+    <button onclick="startGame()">Let’s Play</button>
+  </div>
+  <div id="board" class="board"></div>
+  <img id="winDance" src="assets/characters/raven-dance.gif" alt="Raven Dance" style="display:none;" />
   <script src="js/game.js"></script>
 </body>
 </html>
-    
