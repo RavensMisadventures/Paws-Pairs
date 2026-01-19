@@ -1,4 +1,4 @@
-// Raven’s Paws Pairs — Option A (matches Cozy Quest vibe)
+// Raven’s Paws Pairs — Option A styling, Option B size, EVEN grid (4 across, even rows)
 
 const ITEM_POOL = [
   { id: "cat-bed", label: "Cat Bed", src: "assets/items/cat-bed.png" },
@@ -18,15 +18,26 @@ const CHARACTER_POOL = [
   { id: "bo", label: "Bo", src: "assets/characters/bo.png" }
 ];
 
+// Levels (NO Level 6)
 const LEVELS = {
   1: { id: 1, pairs: 2 }, // 4 cards
   2: { id: 2, pairs: 3 }, // 6 cards
   3: { id: 3, pairs: 4 }, // 8 cards
   4: { id: 4, pairs: 5 }, // 10 cards
-  5: { id: 5, pairs: 6 }, // 12 cards
-  6: { id: 6, pairs: 7 }  // 14 cards
+  5: { id: 5, pairs: 6 }  // 12 cards
 };
 
+const COLS = 4; // even across
+// ensure even rows: 2, 4, 6... rows
+function evenRowsForCards(cardCount){
+  const rows = Math.ceil(cardCount / COLS);
+  return (rows % 2 === 0) ? rows : rows + 1;
+}
+function slotsForCards(cardCount){
+  return evenRowsForCards(cardCount) * COLS;
+}
+
+// DOM
 const startScreen = document.getElementById("startScreen");
 const gameScreen  = document.getElementById("gameScreen");
 const grid        = document.getElementById("cardGrid");
@@ -47,6 +58,7 @@ const resetBtn    = document.getElementById("resetBtn");
 const soundBtn    = document.getElementById("soundBtn");
 const vibeBtn     = document.getElementById("vibeBtn");
 
+// state
 let currentLevel = 1;
 let deck = [];
 let first = null;
@@ -60,41 +72,35 @@ let totalPairs = 0;
 let soundOn = false;
 let vibeOn = false;
 
-// --- utils ---
+// utils
 function shuffle(arr){
   for (let i = arr.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 }
-
 function showStart(){
   gameScreen.classList.remove("active");
   startScreen.classList.add("active");
   hideOverlay();
 }
-
 function showGame(){
   startScreen.classList.remove("active");
   gameScreen.classList.add("active");
 }
-
 function showOverlay(title, msg){
   overlayTitle.textContent = title;
   overlayMsg.textContent = msg;
   overlay.classList.remove("hidden");
 }
-
 function hideOverlay(){
   overlay.classList.add("hidden");
 }
-
 function updateHud(){
   levelLabel.textContent = `Level ${currentLevel}`;
   movesLabel.textContent = `Moves: ${moves}`;
   matchesLabel.textContent = `Matches: ${matches}/${totalPairs}`;
 }
-
 function vibrate(pattern){
   if (!vibeOn) return;
   if (navigator && typeof navigator.vibrate === "function"){
@@ -102,7 +108,7 @@ function vibrate(pattern){
   }
 }
 
-// WebAudio gentle tones (no mp3 files needed)
+// WebAudio tones (no mp3 files)
 let audioCtx = null;
 function playTone(freq, ms){
   if (!soundOn) return;
@@ -119,17 +125,16 @@ function playTone(freq, ms){
     setTimeout(() => o.stop(), ms);
   }catch{}
 }
-
 function setSoundUI(){
   soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
   soundBtn.innerHTML = soundOn ? "🔊 <span>Sound</span>" : "🔇 <span>Sound</span>";
 }
-
 function setVibeUI(){
   vibeBtn.setAttribute("aria-pressed", vibeOn ? "true" : "false");
   vibeBtn.innerHTML = vibeOn ? "📳 <span>Vibrate</span>" : "📴 <span>Vibrate</span>";
 }
 
+// deck rules
 function buildDeck(levelId, pairs){
   const pool = (levelId <= 2)
     ? [...ITEM_POOL]
@@ -150,12 +155,12 @@ function buildDeck(levelId, pairs){
 function render(){
   grid.innerHTML = "";
 
-  deck.forEach((c, idx) => {
+  // render cards
+  deck.forEach((c) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "card";
     btn.dataset.id = c.id;
-    btn.dataset.idx = String(idx);
 
     const inner = document.createElement("div");
     inner.className = "card-inner";
@@ -163,7 +168,7 @@ function render(){
     const back = document.createElement("div");
     back.className = "face back";
 
-    // seal fallback if aged file missing
+    // seal fallback if aged not present
     const testSeal = new Image();
     testSeal.onerror = () => back.classList.add("fallback");
     testSeal.src = "assets/backs/raven-seal-aged.png";
@@ -188,9 +193,17 @@ function render(){
     btn.appendChild(inner);
 
     btn.addEventListener("click", () => onCard(btn));
-
     grid.appendChild(btn);
   });
+
+  // pad with placeholders so rows are even
+  const neededSlots = slotsForCards(deck.length);
+  const placeholders = Math.max(0, neededSlots - deck.length);
+  for (let i=0; i<placeholders; i++){
+    const ph = document.createElement("div");
+    ph.className = "placeholder";
+    grid.appendChild(ph);
+  }
 }
 
 function startLevel(levelId){
