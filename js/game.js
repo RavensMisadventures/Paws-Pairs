@@ -1,6 +1,6 @@
 // js/game.js
 
-// ---------- Pools (use YOUR exact repo folders) ----------
+// ---------- Card pools ----------
 const ITEM_POOL = [
   { id: "cat-bed", label: "Cat Bed", src: "assets/items/cat-bed.png" },
   { id: "cookie", label: "Cookie", src: "assets/items/cookie.png" },
@@ -19,7 +19,7 @@ const CHARACTER_POOL = [
   { id: "bo", label: "Bo", src: "assets/characters/bo.png" }
 ];
 
-// Levels: PAIRS (cards = pairs * 2)
+// Levels by PAIRS (cards = pairs * 2)
 const LEVELS = {
   1: { id: 1, pairs: 2 },   // 4 cards
   2: { id: 2, pairs: 4 },   // 8 cards
@@ -30,37 +30,36 @@ const LEVELS = {
 };
 
 // ---------- DOM ----------
-const startScreen = document.getElementById("startScreen");
-const gameScreen  = document.getElementById("gameScreen");
-const grid        = document.getElementById("cardGrid");
+const startScreen   = document.getElementById("startScreen");
+const gameScreen    = document.getElementById("gameScreen");
+const grid          = document.getElementById("cardGrid");
+const levelLabel    = document.getElementById("levelLabel");
+const movesLabel    = document.getElementById("movesLabel");
+const matchesLabel  = document.getElementById("matchesLabel");
 
-const levelLabel   = document.getElementById("levelLabel");
-const movesLabel   = document.getElementById("movesLabel");
-const matchesLabel = document.getElementById("matchesLabel");
+const overlay       = document.getElementById("overlay");
+const overlayTitle  = document.getElementById("overlayTitle");
+const overlayMessage= document.getElementById("overlayMessage");
+const playAgainBtn  = document.getElementById("playAgainBtn");
+const backHomeBtn   = document.getElementById("backHomeBtn");
 
-const overlay        = document.getElementById("overlay");
-const overlayTitle   = document.getElementById("overlayTitle");
-const overlayMessage = document.getElementById("overlayMessage");
-const playAgainBtn   = document.getElementById("playAgainBtn");
-const backHomeBtn    = document.getElementById("backHomeBtn");
-
-const backBtn   = document.getElementById("backBtn");
-const homeBtn   = document.getElementById("homeBtn");
-const resetBtn  = document.getElementById("resetBtn");
+const backBtn       = document.getElementById("backBtn");
+const homeBtn       = document.getElementById("homeBtn");
+const resetBtn      = document.getElementById("resetBtn");
 
 const soundToggle   = document.getElementById("soundToggle");
 const vibrateToggle = document.getElementById("vibrateToggle");
 
-const flipSound  = document.getElementById("flipSound");
-const matchSound = document.getElementById("matchSound");
-const winSound   = document.getElementById("winSound");
+const flipSound     = document.getElementById("flipSound");
+const matchSound    = document.getElementById("matchSound");
+const winSound      = document.getElementById("winSound");
 
 // ---------- State ----------
 let currentLevel = 1;
 let deck = [];
-let first = null;
-let second = null;
-let locked = false;
+let firstCard = null;
+let secondCard = null;
+let boardLocked = false;
 
 let moves = 0;
 let matches = 0;
@@ -69,7 +68,7 @@ let totalPairs = 0;
 let soundOn = true;
 let vibrateOn = false;
 
-// ---------- Helpers ----------
+// ---------- Utility ----------
 function shuffle(arr){
   for (let i = arr.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
@@ -77,24 +76,24 @@ function shuffle(arr){
   }
 }
 
-function play(audio){
+function playSound(audio){
   if (!soundOn || !audio) return;
   try { audio.currentTime = 0; audio.play(); } catch {}
 }
 
-function vibe(pattern){
+function vibrate(pattern){
   if (!vibrateOn) return;
   if (navigator && typeof navigator.vibrate === "function"){
     try { navigator.vibrate(pattern); } catch {}
   }
 }
 
-function showStart(){
+function showScreenStart(){
   gameScreen.classList.remove("active");
   startScreen.classList.add("active");
 }
 
-function showGame(){
+function showScreenGame(){
   startScreen.classList.remove("active");
   gameScreen.classList.add("active");
 }
@@ -109,42 +108,41 @@ function hideOverlay(){
   overlay.classList.add("hidden");
 }
 
-// Level rule: 1–3 items only, 4–6 include characters
-function buildDeck(levelId, pairs){
-  const pool = (levelId <= 3)
-    ? [...ITEM_POOL]
-    : [...CHARACTER_POOL, ...ITEM_POOL];
-
-  // Ensure we have enough unique images
-  const maxPairs = Math.min(pairs, pool.length);
-  const chosen = pool.slice(0, maxPairs);
-
-  const d = [];
-  chosen.forEach(item => {
-    d.push({ ...item, k: item.id + "-a" });
-    d.push({ ...item, k: item.id + "-b" });
-  });
-
-  shuffle(d);
-  return d;
-}
-
-function setHud(){
+function updateHud(){
   levelLabel.textContent = `Level ${currentLevel}`;
   movesLabel.textContent = `Moves: ${moves}`;
   matchesLabel.textContent = `Matches: ${matches}/${totalPairs}`;
 }
 
-// ---------- Render ----------
-function render(){
+// Level rule: 1–3 items only, 4–6 items + characters
+function buildDeck(levelId, pairs){
+  const pool = (levelId <= 3)
+    ? [...ITEM_POOL]
+    : [...CHARACTER_POOL, ...ITEM_POOL];
+
+  const maxPairs = Math.min(pairs, pool.length);
+  const chosen = pool.slice(0, maxPairs);
+
+  const cards = [];
+  chosen.forEach(item => {
+    cards.push({ ...item, key: item.id + "-a" });
+    cards.push({ ...item, key: item.id + "-b" });
+  });
+
+  shuffle(cards);
+  return cards;
+}
+
+// ---------- Rendering ----------
+function renderDeck(){
   grid.innerHTML = "";
 
-  deck.forEach((cardData, idx) => {
+  deck.forEach((cardData, index) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "card";
     btn.dataset.id = cardData.id;
-    btn.dataset.idx = String(idx);
+    btn.dataset.index = String(index);
 
     const inner = document.createElement("div");
     inner.className = "card-inner";
@@ -159,7 +157,7 @@ function render(){
     img.alt = cardData.label;
     img.src = cardData.src;
 
-    // If image fails, log the exact missing path
+    // Log missing images to console for easy debugging
     img.addEventListener("error", () => {
       console.error("IMAGE NOT FOUND:", cardData.src);
     });
@@ -181,7 +179,7 @@ function render(){
   });
 }
 
-// ---------- Gameplay ----------
+// ---------- Game flow ----------
 function startLevel(levelId){
   const level = LEVELS[levelId] || LEVELS[1];
   currentLevel = level.id;
@@ -190,116 +188,129 @@ function startLevel(levelId){
   matches = 0;
   totalPairs = level.pairs;
 
-  first = null;
-  second = null;
-  locked = false;
+  firstCard = null;
+  secondCard = null;
+  boardLocked = false;
 
   hideOverlay();
 
   deck = buildDeck(level.id, level.pairs);
-  setHud();
-  render();
-  showGame();
+  updateHud();
+  renderDeck();
+  showScreenGame();
 }
 
 function resetLevel(){
   startLevel(currentLevel);
 }
 
-function onCardClick(cardEl){
-  if (locked) return;
-  if (cardEl.classList.contains("flipped") || cardEl.classList.contains("matched")) return;
+function onCardClick(card){
+  if (boardLocked) return;
+  if (card.classList.contains("flipped") || card.classList.contains("matched")) return;
 
-  cardEl.classList.add("flipped");
-  play(flipSound);
+  card.classList.add("flipped");
+  playSound(flipSound);
 
-  if (!first){
-    first = cardEl;
+  if (!firstCard){
+    firstCard = card;
     return;
   }
 
-  if (cardEl === first) return;
+  if (card === firstCard) return;
 
-  second = cardEl;
-  locked = true;
+  secondCard = card;
+  boardLocked = true;
 
   moves++;
-  setHud();
+  updateHud();
 
-  const a = first.dataset.id;
-  const b = second.dataset.id;
+  const a = firstCard.dataset.id;
+  const b = secondCard.dataset.id;
 
   if (a === b){
-    // match
-    play(matchSound);
-    vibe([20, 40, 20]);
-
-    setTimeout(() => {
-      first.classList.add("matched");
-      second.classList.add("matched");
-
-      matches++;
-      setHud();
-
-      first = null;
-      second = null;
-      locked = false;
-
-      if (matches === totalPairs){
-        play(winSound);
-        vibe([30, 60, 30, 60, 30]);
-        showOverlay("Great job!", "You found all the cozy pairs. 🐾");
-      }
-    }, 260);
+    handleMatch();
   } else {
-    // mismatch
-    setTimeout(() => {
-      first.classList.remove("flipped");
-      second.classList.remove("flipped");
-      first = null;
-      second = null;
-      locked = false;
-    }, 520);
+    handleMismatch();
   }
 }
 
-// ---------- Controls ----------
-function setSoundUI(){
+function handleMatch(){
+  playSound(matchSound);
+  vibrate([20, 40, 20]);
+
+  setTimeout(() => {
+    firstCard.classList.add("matched");
+    secondCard.classList.add("matched");
+
+    matches++;
+    updateHud();
+
+    firstCard = null;
+    secondCard = null;
+    boardLocked = false;
+
+    if (matches === totalPairs){
+      playSound(winSound);
+      vibrate([40, 60, 40, 60, 40]);
+      showOverlay("Great job!", "You found all the cozy pairs. 🐾");
+    }
+  }, 260);
+}
+
+function handleMismatch(){
+  setTimeout(() => {
+    firstCard.classList.remove("flipped");
+    secondCard.classList.remove("flipped");
+    firstCard = null;
+    secondCard = null;
+    boardLocked = false;
+  }, 520);
+}
+
+// ---------- UI Toggles ----------
+function updateSoundUI(){
   soundToggle.setAttribute("aria-pressed", soundOn ? "true" : "false");
-  soundToggle.innerHTML = soundOn ? "🔊 <span>Sound</span>" : "🔇 <span>Sound</span>";
+  soundToggle.innerHTML = soundOn
+    ? "🔊 <span>Sound</span>"
+    : "🔇 <span>Sound</span>";
 }
 
-function setVibeUI(){
+function updateVibrateUI(){
   vibrateToggle.setAttribute("aria-pressed", vibrateOn ? "true" : "false");
-  vibrateToggle.innerHTML = vibrateOn ? "📳 <span>Vibrate</span>" : "📴 <span>Vibrate</span>";
+  vibrateToggle.innerHTML = vibrateOn
+    ? "📳 <span>Vibrate</span>"
+    : "📴 <span>Vibrate</span>";
 }
 
-// ---------- Init ----------
+// ---------- Event wiring ----------
 document.querySelectorAll(".level-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    const lv = parseInt(btn.dataset.level, 10);
-    startLevel(lv);
+    const levelId = parseInt(btn.dataset.level, 10);
+    startLevel(levelId);
   });
 });
 
-backBtn.addEventListener("click", () => showStart());
-homeBtn.addEventListener("click", () => showStart());
-resetBtn.addEventListener("click", () => resetLevel());
+backBtn.addEventListener("click", showScreenStart);
+homeBtn.addEventListener("click", showScreenStart);
+resetBtn.addEventListener("click", resetLevel);
 
-playAgainBtn.addEventListener("click", () => resetLevel());
-backHomeBtn.addEventListener("click", () => { hideOverlay(); showStart(); });
+playAgainBtn.addEventListener("click", resetLevel);
+backHomeBtn.addEventListener("click", () => {
+  hideOverlay();
+  showScreenStart();
+});
 
 soundToggle.addEventListener("click", () => {
   soundOn = !soundOn;
-  setSoundUI();
+  updateSoundUI();
 });
 
 vibrateToggle.addEventListener("click", () => {
   vibrateOn = !vibrateOn;
-  setVibeUI();
-  if (vibrateOn) vibe(20);
+  updateVibrateUI();
+  if (vibrateOn) vibrate(30);
 });
 
-// default UI
-setSoundUI();
-setVibeUI();
+// Initial UI
+updateSoundUI();
+updateVibrateUI();
