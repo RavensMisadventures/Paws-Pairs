@@ -1,5 +1,3 @@
-// js/game.js
-
 // ---------- Card pools ----------
 const ITEM_POOL = [
   { id: "cat-bed", label: "Cat Bed", src: "assets/items/cat-bed.png" },
@@ -19,14 +17,16 @@ const CHARACTER_POOL = [
   { id: "bo", label: "Bo", src: "assets/characters/bo.png" }
 ];
 
-// Levels by PAIRS (cards = pairs * 2)
+// ---------- Levels ----------
+// pairs * 2 = cards
+// Level 1 = 4 cards, then +2 cards per level
 const LEVELS = {
-  1: { id: 1, pairs: 2 },   // 4 cards
-  2: { id: 2, pairs: 4 },   // 8 cards
-  3: { id: 3, pairs: 6 },   // 12 cards
-  4: { id: 4, pairs: 8 },   // 16 cards
-  5: { id: 5, pairs: 10 },  // 20 cards
-  6: { id: 6, pairs: 12 }   // 24 cards
+  1: { id: 1, pairs: 2 },  // 4 cards
+  2: { id: 2, pairs: 3 },  // 6 cards
+  3: { id: 3, pairs: 4 },  // 8 cards
+  4: { id: 4, pairs: 5 },  // 10 cards
+  5: { id: 5, pairs: 6 },  // 12 cards
+  6: { id: 6, pairs: 7 }   // 14 cards
 };
 
 // ---------- DOM ----------
@@ -50,10 +50,6 @@ const resetBtn      = document.getElementById("resetBtn");
 const soundToggle   = document.getElementById("soundToggle");
 const vibrateToggle = document.getElementById("vibrateToggle");
 
-const flipSound     = document.getElementById("flipSound");
-const matchSound    = document.getElementById("matchSound");
-const winSound      = document.getElementById("winSound");
-
 // ---------- State ----------
 let currentLevel = 1;
 let deck = [];
@@ -65,7 +61,7 @@ let moves = 0;
 let matches = 0;
 let totalPairs = 0;
 
-let soundOn = true;
+let soundOn = false;   // no audio files right now
 let vibrateOn = false;
 
 // ---------- Utility ----------
@@ -76,9 +72,8 @@ function shuffle(arr){
   }
 }
 
-function playSound(audio){
-  if (!soundOn || !audio) return;
-  try { audio.currentTime = 0; audio.play(); } catch {}
+function playSound(_audio){
+  // sound disabled for now
 }
 
 function vibrate(pattern){
@@ -114,11 +109,16 @@ function updateHud(){
   matchesLabel.textContent = `Matches: ${matches}/${totalPairs}`;
 }
 
-// Level rule: 1–3 items only, 4–6 items + characters
+// ---------- Deck building ----------
+// Level 1–2: items only
+// Level 3+ : characters + items (random mix from combined pool)
 function buildDeck(levelId, pairs){
-  const pool = (levelId <= 3)
-    ? [...ITEM_POOL]
-    : [...CHARACTER_POOL, ...ITEM_POOL];
+  const pool =
+    levelId <= 2
+      ? [...ITEM_POOL]
+      : [...CHARACTER_POOL, ...ITEM_POOL];
+
+  shuffle(pool);
 
   const maxPairs = Math.min(pairs, pool.length);
   const chosen = pool.slice(0, maxPairs);
@@ -157,7 +157,6 @@ function renderDeck(){
     img.alt = cardData.label;
     img.src = cardData.src;
 
-    // Log missing images to console for easy debugging
     img.addEventListener("error", () => {
       console.error("IMAGE NOT FOUND:", cardData.src);
     });
@@ -209,7 +208,7 @@ function onCardClick(card){
   if (card.classList.contains("flipped") || card.classList.contains("matched")) return;
 
   card.classList.add("flipped");
-  playSound(flipSound);
+  playSound(null);
 
   if (!firstCard){
     firstCard = card;
@@ -235,7 +234,6 @@ function onCardClick(card){
 }
 
 function handleMatch(){
-  playSound(matchSound);
   vibrate([20, 40, 20]);
 
   setTimeout(() => {
@@ -250,7 +248,6 @@ function handleMatch(){
     boardLocked = false;
 
     if (matches === totalPairs){
-      playSound(winSound);
       vibrate([40, 60, 40, 60, 40]);
       showOverlay("Great job!", "You found all the cozy pairs. 🐾");
     }
