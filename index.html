@@ -3,35 +3,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Raven’s Cozy Match</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
   <header>
-    <div style="display:flex;align-items:center;">
+    <div class="logo">
       <img src="assets/characters/raven.png" alt="Raven" />
       <h1>Raven’s Cozy Match</h1>
     </div>
-    <div>
-      <button id="soundToggle">🔈 Sound</button>
+    <div class="controls">
+      <button onclick="goHome()">🏠 Home</button>
+      <button onclick="resetGame()">🌀 Reset</button>
+      <button onclick="toggleSound()">🔊 Sound</button>
+      <button onclick="toggleVibrate()">📳 Vibrate</button>
     </div>
   </header>
 
-  <div class="controls">
-    <p>Choose your cozy game</p>
-    <label>Level:
-      <select id="levelSelect">
-        <option value="2">Level 1 — 4 cards</option>
-        <option value="3" selected>Level 2 — 6 cards</option>
-        <option value="4">Level 3 — 8 cards</option>
-        <option value="6">Level 4 — 12 cards</option>
-      </select>
-    </label>
-    <button onclick="createBoard(currentLevel)">Let’s Play</button>
-  </div>
+  <section class="setup">
+    <h2>Choose your cozy game</h2>
+    <label for="characterSelect">Character:</label>
+    <select id="characterSelect">
+      <option value="raven">Raven</option>
+      <option value="willow">Willow</option>
+      <option value="salem">Salem</option>
+      <option value="bo">Bo</option>
+    </select>
+    <label for="levelSelect">Level:</label>
+    <select id="levelSelect">
+      <option value="4">Level 1 — 4 cards</option>
+      <option value="6">Level 2 — 6 cards</option>
+      <option value="8">Level 3 — 8 cards</option>
+      <option value="10">Level 4 — 10 cards</option>
+      <option value="12">Level 5 — 12 cards</option>
+      <option value="16">Level 6 — 16 cards</option>
+    </select>
+    <button onclick="startGame()">Let’s Play</button>
+  </section>
 
-  <div class="board"></div>
+  <main id="gameBoard" class="game-board"></main>
+
+  <div id="overlayWin" class="overlay hidden">
+    <img src="assets/characters/raven-dance.gif" alt="Raven Dancing" />
+    <div class="message">🎉 Great job, you matched them all!</div>
+    <button onclick="startGame()">Play Again</button>
+  </div>
 
   <script src="js/game.js"></script>
 </body>
