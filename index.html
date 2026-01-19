@@ -32,13 +32,16 @@
       <section id="startScreen" class="screen active" aria-label="Start screen">
         <h2>Choose your cozy level</h2>
         <div class="level-grid">
-          <button class="level-btn" data-level="1" type="button">Level 1 <small>4 cards</small></button>
-          <button class="level-btn" data-level="2" type="button">Level 2 <small>6 cards</small></button>
-          <button class="level-btn" data-level="3" type="button">Level 3 <small>8 cards</small></button>
-          <button class="level-btn" data-level="4" type="button">Level 4 <small>10 cards</small></button>
-          <button class="level-btn" data-level="5" type="button">Level 5 <small>12 cards</small></button>
+          <button class="level-btn" data-level="1" type="button">Level 1 <small>4 cards (2×2)</small></button>
+          <button class="level-btn" data-level="2" type="button">Level 2 <small>6 cards (3×2)</small></button>
+          <button class="level-btn" data-level="3" type="button">Level 3 <small>8 cards (4×2)</small></button>
+          <button class="level-btn" data-level="4" type="button">Level 4 <small>12 cards (4×3)</small></button>
+          <button class="level-btn" data-level="5" type="button">Level 5 <small>16 cards (4×4)</small></button>
+          <button class="level-btn" data-level="6" type="button">Level 6 <small>20 cards (5×4)</small></button>
         </div>
-        <p class="hint">Levels 1–2 use cozy items. Levels 3–5 use a random mix of items + Raven, Willow, Salem, and Bo.</p>
+        <p class="hint">
+          Levels gently grow from tiny grids to bigger ones. Higher levels mix Raven, Willow, Salem, Bo, and cozy items.
+        </p>
       </section>
 
       <!-- Game -->
@@ -46,7 +49,7 @@
         <div class="hud">
           <button id="backBtn" class="ghost" type="button">← Back</button>
           <div class="chips">
-            <span class="chip" id="levelLabel">Level 1</span>
+            <span class="chip" id="levelLabel">Level 1 • 4 Cards (2×2)</span>
             <span class="chip" id="movesLabel">Moves: 0</span>
             <span class="chip" id="matchesLabel">Matches: 0/2</span>
           </div>

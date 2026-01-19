@@ -17,8 +17,9 @@
   --gap: clamp(10px, 1.1vw, 14px);
   --radius: 28px;
 
-  /* Smaller cards (Option B) */
+  /* Card sizing */
   --cardSize: clamp(64px, 16vw, 96px);
+  --grid-cols: 4;
 }
 
 *{ box-sizing:border-box; }
@@ -211,10 +212,10 @@ h2{
   font-size: 13px;
 }
 
-/* Grid: EVEN across/down -> fixed 4 columns, pad with invisible placeholders so rows are even */
+/* Grid – dynamic cols/rows from JS */
 .grid{
   display:grid;
-  grid-template-columns: repeat(4, var(--cardSize));
+  grid-template-columns: repeat(var(--grid-cols), var(--cardSize));
   grid-auto-rows: var(--cardSize);
   gap: var(--gap);
   justify-content:center;
@@ -302,13 +303,6 @@ h2{
   font-weight: 900;
   font-size: 13px;
   opacity: .92;
-}
-
-/* Invisible placeholders to keep even rows */
-.placeholder{
-  width: var(--cardSize);
-  height: var(--cardSize);
-  visibility: hidden;
 }
 
 /* Overlay */

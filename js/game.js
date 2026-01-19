@@ -1,43 +1,28 @@
-// Raven’s Paws Pairs — Option A styling, Option B size, EVEN grid (4 across, even rows)
+// Raven’s Paws Pairs — grid-based LEVELS config
 
-const ITEM_POOL = [
-  { id: "cat-bed", label: "Cat Bed", src: "assets/items/cat-bed.png" },
-  { id: "cookie", label: "Cookie", src: "assets/items/cookie.png" },
-  { id: "feather", label: "Feather", src: "assets/items/feather.png" },
-  { id: "leaf", label: "Leaf", src: "assets/items/leaf.png" },
-  { id: "mouse", label: "Mouse", src: "assets/items/mouse.png" },
-  { id: "rock", label: "Rock", src: "assets/items/rock.png" },
-  { id: "blanket", label: "Blanket", src: "assets/items/security-blanket.png" },
-  { id: "sock", label: "Sock", src: "assets/items/sock.png" }
-];
-
-const CHARACTER_POOL = [
-  { id: "raven", label: "Raven", src: "assets/characters/raven.png" },
-  { id: "willow", label: "Willow", src: "assets/characters/willow.png" },
-  { id: "salem", label: "Salem", src: "assets/characters/salem.png" },
-  { id: "bo", label: "Bo", src: "assets/characters/bo.png" }
-];
-
-// Levels (NO Level 6)
-const LEVELS = {
-  1: { id: 1, pairs: 2 }, // 4 cards
-  2: { id: 2, pairs: 3 }, // 6 cards
-  3: { id: 3, pairs: 4 }, // 8 cards
-  4: { id: 4, pairs: 5 }, // 10 cards
-  5: { id: 5, pairs: 6 }  // 12 cards
+const CARD_DEFS = {
+  raven:   { id: "raven",   label: "Raven",   src: "assets/characters/raven.png" },
+  willow:  { id: "willow",  label: "Willow",  src: "assets/characters/willow.png" },
+  salem:   { id: "salem",   label: "Salem",   src: "assets/characters/salem.png" },
+  bo:      { id: "bo",      label: "Bo",      src: "assets/characters/bo.png" },
+  cookie:  { id: "cookie",  label: "Cookie",  src: "assets/items/cookie.png" },
+  mouse:   { id: "mouse",   label: "Mouse",   src: "assets/items/mouse.png" },
+  sock:    { id: "sock",    label: "Sock",    src: "assets/items/sock.png" },
+  feather: { id: "feather", label: "Feather", src: "assets/items/feather.png" },
+  leaf:    { id: "leaf",    label: "Leaf",    src: "assets/items/leaf.png" },
+  rock:    { id: "rock",    label: "Rock",    src: "assets/items/rock.png" }
 };
 
-const COLS = 4; // even across
-// ensure even rows: 2, 4, 6... rows
-function evenRowsForCards(cardCount){
-  const rows = Math.ceil(cardCount / COLS);
-  return (rows % 2 === 0) ? rows : rows + 1;
-}
-function slotsForCards(cardCount){
-  return evenRowsForCards(cardCount) * COLS;
-}
+/* ----- Levels (pairs only) ----- */
+const LEVELS = [
+  { id: 1, name: "Level 1 • 4 Cards (2×2)",  cols: 2, rows: 2, pool: ["raven","willow"] },
+  { id: 2, name: "Level 2 • 6 Cards (3×2)",  cols: 3, rows: 2, pool: ["raven","willow","cookie"] },
+  { id: 3, name: "Level 3 • 8 Cards (4×2)",  cols: 4, rows: 2, pool: ["raven","willow","cookie","leaf"] },
+  { id: 4, name: "Level 4 • 12 Cards (4×3)", cols: 4, rows: 3, pool: ["raven","willow","salem","bo","cookie","mouse"] },
+  { id: 5, name: "Level 5 • 16 Cards (4×4)", cols: 4, rows: 4, pool: ["raven","willow","salem","bo","cookie","mouse","sock","feather"] },
+  { id: 6, name: "Level 6 • 20 Cards (5×4)", cols: 5, rows: 4, pool: ["raven","willow","salem","bo","cookie","mouse","sock","feather","leaf","rock"] },
+];
 
-// DOM
 const startScreen = document.getElementById("startScreen");
 const gameScreen  = document.getElementById("gameScreen");
 const grid        = document.getElementById("cardGrid");
@@ -58,8 +43,7 @@ const resetBtn    = document.getElementById("resetBtn");
 const soundBtn    = document.getElementById("soundBtn");
 const vibeBtn     = document.getElementById("vibeBtn");
 
-// state
-let currentLevel = 1;
+let currentLevelIndex = 0;
 let deck = [];
 let first = null;
 let second = null;
@@ -79,28 +63,34 @@ function shuffle(arr){
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 }
+
 function showStart(){
   gameScreen.classList.remove("active");
   startScreen.classList.add("active");
   hideOverlay();
 }
+
 function showGame(){
   startScreen.classList.remove("active");
   gameScreen.classList.add("active");
 }
+
 function showOverlay(title, msg){
   overlayTitle.textContent = title;
   overlayMsg.textContent = msg;
   overlay.classList.remove("hidden");
 }
+
 function hideOverlay(){
   overlay.classList.add("hidden");
 }
-function updateHud(){
-  levelLabel.textContent = `Level ${currentLevel}`;
+
+function updateHud(level){
+  levelLabel.textContent = level.name;
   movesLabel.textContent = `Moves: ${moves}`;
   matchesLabel.textContent = `Matches: ${matches}/${totalPairs}`;
 }
+
 function vibrate(pattern){
   if (!vibeOn) return;
   if (navigator && typeof navigator.vibrate === "function"){
@@ -108,7 +98,7 @@ function vibrate(pattern){
   }
 }
 
-// WebAudio tones (no mp3 files)
+// WebAudio tones
 let audioCtx = null;
 function playTone(freq, ms){
   if (!soundOn) return;
@@ -125,6 +115,7 @@ function playTone(freq, ms){
     setTimeout(() => o.stop(), ms);
   }catch{}
 }
+
 function setSoundUI(){
   soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
   soundBtn.innerHTML = soundOn ? "🔊 <span>Sound</span>" : "🔇 <span>Sound</span>";
@@ -134,28 +125,33 @@ function setVibeUI(){
   vibeBtn.innerHTML = vibeOn ? "📳 <span>Vibrate</span>" : "📴 <span>Vibrate</span>";
 }
 
-// deck rules
-function buildDeck(levelId, pairs){
-  const pool = (levelId <= 2)
-    ? [...ITEM_POOL]
-    : [...ITEM_POOL, ...CHARACTER_POOL];
-
-  shuffle(pool);
-  const chosen = pool.slice(0, Math.min(pairs, pool.length));
+// build deck for a level
+function buildDeck(level){
+  const totalCards = level.cols * level.rows;
+  const pairs = totalCards / 2;
+  const ids = level.pool.slice(0, pairs); // one pair per id
 
   const cards = [];
-  for (const c of chosen){
-    cards.push({ ...c, key: c.id + "-a" });
-    cards.push({ ...c, key: c.id + "-b" });
-  }
+  ids.forEach((key) => {
+    const def = CARD_DEFS[key];
+    if (!def){
+      console.warn("CARD DEF MISSING FOR", key);
+      return;
+    }
+    cards.push({ ...def, key: key + "-a" });
+    cards.push({ ...def, key: key + "-b" });
+  });
+
   shuffle(cards);
-  return cards;
+  return { cards, pairs };
 }
 
-function render(){
+function render(level){
+  // set CSS grid columns based on level
+  grid.style.setProperty("--grid-cols", level.cols);
+
   grid.innerHTML = "";
 
-  // render cards
   deck.forEach((c) => {
     const btn = document.createElement("button");
     btn.type = "button";
@@ -168,7 +164,6 @@ function render(){
     const back = document.createElement("div");
     back.className = "face back";
 
-    // seal fallback if aged not present
     const testSeal = new Image();
     testSeal.onerror = () => back.classList.add("fallback");
     testSeal.src = "assets/backs/raven-seal-aged.png";
@@ -195,39 +190,32 @@ function render(){
     btn.addEventListener("click", () => onCard(btn));
     grid.appendChild(btn);
   });
-
-  // pad with placeholders so rows are even
-  const neededSlots = slotsForCards(deck.length);
-  const placeholders = Math.max(0, neededSlots - deck.length);
-  for (let i=0; i<placeholders; i++){
-    const ph = document.createElement("div");
-    ph.className = "placeholder";
-    grid.appendChild(ph);
-  }
 }
 
-function startLevel(levelId){
-  const level = LEVELS[levelId] || LEVELS[1];
-  currentLevel = level.id;
+function startLevelById(levelId){
+  const index = LEVELS.findIndex(l => l.id === levelId);
+  if (index === -1) return;
+  currentLevelIndex = index;
+  const level = LEVELS[currentLevelIndex];
 
+  const { cards, pairs } = buildDeck(level);
+  deck = cards;
+  totalPairs = pairs;
   moves = 0;
   matches = 0;
-  totalPairs = level.pairs;
-
   first = null;
   second = null;
   locked = false;
 
   hideOverlay();
-
-  deck = buildDeck(level.id, level.pairs);
-  updateHud();
-  render();
+  updateHud(level);
+  render(level);
   showGame();
 }
 
 function resetLevel(){
-  startLevel(currentLevel);
+  const level = LEVELS[currentLevelIndex];
+  startLevelById(level.id);
 }
 
 function onCard(card){
@@ -247,7 +235,7 @@ function onCard(card){
   locked = true;
 
   moves++;
-  updateHud();
+  updateHud(LEVELS[currentLevelIndex]);
 
   if (first.dataset.id === second.dataset.id){
     setTimeout(matchPair, 240);
@@ -261,7 +249,7 @@ function matchPair(){
   second.classList.add("matched");
 
   matches++;
-  updateHud();
+  updateHud(LEVELS[currentLevelIndex]);
 
   playTone(740, 90);
   vibrate([18, 30, 18]);
@@ -292,7 +280,10 @@ function unflipPair(){
 
 // events
 document.querySelectorAll(".level-btn").forEach(btn => {
-  btn.addEventListener("click", () => startLevel(parseInt(btn.dataset.level, 10)));
+  btn.addEventListener("click", () => {
+    const id = parseInt(btn.dataset.level, 10);
+    startLevelById(id);
+  });
 });
 
 backBtn.addEventListener("click", showStart);
