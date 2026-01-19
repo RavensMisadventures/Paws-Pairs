@@ -2,40 +2,91 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Raven’s Cozy Match</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Raven's Paws Pairs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="header">
-    <img src="assets/characters/raven.png" alt="Raven Icon" />
-    <h1>Raven’s Cozy Match</h1>
-    <div class="controls">
-      <button onclick="location.reload()">🔁 Reset</button>
-      <button onclick="toggleSound()">🔊 Sound</button>
-      <button onclick="navigator.vibrate(200)">📳 Vibrate</button>
+  <div class="app">
+    <header class="site-header">
+      <div class="logo-title">
+        <img src="assets/characters/raven.png" alt="Raven" class="raven-avatar" />
+        <div>
+          <h1>Raven's Paws Pairs</h1>
+          <p class="subtitle">A cozy matching game</p>
+        </div>
+      </div>
+
+      <button id="soundToggle" class="icon-button" aria-pressed="false" title="Toggle sound">
+        🔊
+      </button>
+    </header>
+
+    <main>
+      <!-- Start Screen -->
+      <section id="startScreen" class="screen active">
+        <div class="start-card">
+          <h2>Choose your cozy level</h2>
+          <p class="start-text">
+            Flip cards to find matching pairs. Take your time, breathe, and enjoy each little win. 🐾
+          </p>
+
+          <div class="level-list">
+            <button class="level-button" data-level="1">Level 1 — Gentle Start (4 cards)</button>
+            <button class="level-button" data-level="2">Level 2 — Cozy Match (8 cards)</button>
+            <button class="level-button" data-level="3">Level 3 — Extra Snuggly (12 cards)</button>
+            <button class="level-button" data-level="4">Level 4 — Big Stretch (16 cards)</button>
+            <button class="level-button" data-level="5">Level 5 — Brave Tail (20 cards)</button>
+            <button class="level-button" data-level="6">Level 6 — Super Cozy (24 cards)</button>
+          </div>
+
+          <p class="hint-text">
+            Tip: You can always go back to this screen if you need a break.
+          </p>
+        </div>
+      </section>
+
+      <!-- Game Screen -->
+      <section id="gameScreen" class="screen">
+        <div class="game-header-row">
+          <button id="backToMenu" class="soft-button">&larr; Back to start</button>
+          <div class="status">
+            <span id="levelLabel">Level 1</span>
+            <span id="movesLabel">Moves: 0</span>
+            <span id="matchesLabel">Matches: 0</span>
+          </div>
+        </div>
+
+        <div id="cardGrid" class="card-grid" aria-label="Memory card grid"></div>
+      </section>
+    </main>
+
+    <!-- Win Overlay -->
+    <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true">
+      <div class="overlay-content">
+        <h2 id="overlayTitle">Great job!</h2>
+        <p id="overlayMessage">
+          You found all the cozy pairs. Raven is so proud of you. 💛
+        </p>
+        <img src="assets/animations/raven-dance.gif" alt="Raven dancing happily" class="overlay-gif" />
+
+        <div class="overlay-buttons">
+          <button id="playAgainButton" class="primary-button">Play this level again</button>
+          <button id="backHomeButton" class="soft-button">Back to start</button>
+        </div>
+      </div>
     </div>
+
+    <footer class="site-footer">
+      <small>Raven's Misadventures &mdash; Paws Pairs Matching Game</small>
+    </footer>
   </div>
-  <div class="menu">
-    <h2>Choose your cozy game</h2>
-    Character:
-    <select id="character">
-      <option>Raven</option>
-      <option>Willow</option>
-      <option>Salem</option>
-    </select>
-    Level:
-    <select id="level">
-      <option>Level 1 — 4 cards</option>
-      <option>Level 2 — 6 cards</option>
-      <option>Level 3 — 8 cards</option>
-      <option>Level 4 — 10 cards</option>
-      <option>Level 5 — 12 cards</option>
-      <option>Level 6 — 16 cards</option>
-    </select>
-    <button onclick="startGame()">Let’s Play</button>
-  </div>
-  <div id="board" class="board"></div>
-  <img id="winDance" src="assets/characters/raven-dance.gif" alt="Raven Dance" style="display:none;" />
-  <script src="js/game.js"></script>
+
+  <!-- Audio (update paths/filenames if yours are different) -->
+  <audio id="flipSound" src="audio/flip.mp3" preload="auto"></audio>
+  <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
+  <audio id="winSound" src="audio/win.mp3" preload="auto"></audio>
+
+  <script src="game.js"></script>
 </body>
 </html>
