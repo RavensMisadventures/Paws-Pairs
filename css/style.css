@@ -1,1 +1,250 @@
-/* style */
+:root {
+  --bg1:#4f7284;
+  --bg2:#3a5a69;
+  --text:#f4fbff;
+  --panel:rgba(255,255,255,.14);
+  --stroke:rgba(255,255,255,.25);
+  --shadow:rgba(0,0,0,.25);
+  --accent:#ffd9a3;
+  --radius:26px;
+  --cardSize:clamp(68px,16vw,104px);
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI;
+  background:linear-gradient(var(--bg1),var(--bg2));
+  color:var(--text);
+}
+
+/* HEADER */
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  max-width:1200px;
+  margin:auto;
+}
+
+.brand {
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+
+.brand-card {
+  width:72px;
+  height:72px;
+  border-radius:18px;
+  background:rgba(0,0,0,.2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.brand-card img {
+  width:64px;
+}
+
+.controls {
+  display:flex;
+  gap:10px;
+}
+
+.pill {
+  border:none;
+  border-radius:999px;
+  padding:10px 14px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.pill.primary {
+  background:var(--accent);
+}
+
+/* PANEL */
+.stage {
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
+}
+
+.panel {
+  background:var(--panel);
+  border-radius:var(--radius);
+  padding:20px;
+  border:1px solid var(--stroke);
+  box-shadow:0 20px 40px var(--shadow);
+}
+
+.screen { display:none; }
+.screen.active { display:block; }
+
+h2 {
+  text-align:center;
+  margin-bottom:20px;
+}
+
+/* LEVEL GRID */
+.level-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  max-width:720px;
+  margin:0 auto;
+}
+
+.level-btn {
+  border:none;
+  border-radius:22px;
+  background:rgba(255,255,255,.15);
+  aspect-ratio:1/1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.level-icon {
+  width:60%;
+  aspect-ratio:1/1;
+  background:url("../assets/backs/raven-seal-aged.png") center/contain no-repeat;
+  margin-bottom:10px;
+}
+
+.level-title {
+  font-size:1.3rem;
+  font-weight:800;
+}
+
+.level-cards {
+  font-size:.9rem;
+  opacity:.9;
+}
+
+/* HUD */
+.hud {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+
+.chips {
+  display:flex;
+  gap:10px;
+}
+
+.chip {
+  background:rgba(255,255,255,.2);
+  padding:8px 12px;
+  border-radius:999px;
+}
+
+/* GAME GRID */
+.grid {
+  display:grid;
+  justify-content:center;
+  gap:14px;
+}
+
+.card {
+  width:var(--cardSize);
+  height:var(--cardSize);
+  background:none;
+  border:none;
+  perspective:900px;
+  cursor:pointer;
+}
+
+.card-inner {
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .35s ease;
+}
+
+.card.flipped .card-inner,
+.card.matched .card-inner {
+  transform:rotateY(180deg);
+}
+
+.face {
+  position:absolute;
+  inset:0;
+  border-radius:22px;
+  backface-visibility:hidden;
+  box-shadow:0 12px 24px rgba(0,0,0,.25);
+}
+
+.back {
+  background:linear-gradient(135deg,#c9a27f,#a87b59);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.back::before {
+  content:"";
+  width:70%;
+  height:70%;
+  background:url("../assets/backs/raven-seal-aged.png") center/contain no-repeat;
+}
+
+.front {
+  transform:rotateY(180deg);
+  background:white;
+  color:#1c2a32;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.front img {
+  width:80%;
+  height:70%;
+  object-fit:contain;
+}
+
+.label {
+  font-size:.75rem;
+  font-weight:700;
+}
+
+/* OVERLAY */
+.overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.hidden { display:none; }
+
+.overlay-card {
+  background:white;
+  color:#1c2a32;
+  padding:20px;
+  border-radius:22px;
+  text-align:center;
+  max-width:420px;
+}
+
+.overlay-gif {
+  width:180px;
+  margin:12px auto;
+}
+
+.footer {
+  text-align:center;
+  opacity:.8;
+  padding:12px;
+}
