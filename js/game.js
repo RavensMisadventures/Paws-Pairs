@@ -117,23 +117,29 @@ function vibrate(ms) {
    ============================================================ */
 function buildDeck(level) {
   const totalCards = level.cols * level.rows;
-  const pairs = totalCards / 2;
+  const pairsNeeded = totalCards / 2;
 
-  const pool = level.pool.slice(0, pairs);
+  // Shuffle the pool so items/characters are randomized each playthrough
+  const pool = [...level.pool];
+  shuffle(pool);
+
+  // Select the first N items from the randomized pool
+  const chosen = pool.slice(0, pairsNeeded);
 
   const cards = [];
-  pool.forEach(key => {
+  chosen.forEach(key => {
     const def = CARD_DEFS[key];
     if (!def) return;
 
+    // two of each
     cards.push({ ...def, key: key + "-a" });
     cards.push({ ...def, key: key + "-b" });
   });
 
+  // Shuffle the final deck before display
   shuffle(cards);
-  return { cards, pairs };
+  return { cards, pairs: pairsNeeded };
 }
-
 
 /* ============================================================
    RENDER CARDS
