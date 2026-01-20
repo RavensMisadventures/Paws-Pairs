@@ -1,1 +1,114 @@
-<html><body>OK</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Raven’s Paws Pairs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-card">
+      <img src="assets/characters/raven.png" alt="Raven">
+    </div>
+    <div class="brand-text">
+      <h1>Raven’s Paws Pairs</h1>
+      <p>Find cozy matching pairs</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="homeBtn" class="pill">🏠 Home</button>
+    <button id="resetBtn" class="pill">🔄 Reset</button>
+    <button id="soundBtn" class="pill" aria-pressed="false">🔇 Sound</button>
+    <button id="vibeBtn" class="pill" aria-pressed="false">📴 Vibrate</button>
+  </div>
+</header>
+
+<main class="stage">
+  <section class="panel">
+
+    <!-- START SCREEN -->
+    <section id="startScreen" class="screen active">
+      <h2>Choose a level</h2>
+
+      <div class="level-grid">
+        <button class="level-btn" data-level="1">
+          <div class="level-icon"></div>
+          <span class="level-title">Level 1</span>
+          <span class="level-cards">4 cards</span>
+        </button>
+
+        <button class="level-btn" data-level="2">
+          <div class="level-icon"></div>
+          <span class="level-title">Level 2</span>
+          <span class="level-cards">6 cards</span>
+        </button>
+
+        <button class="level-btn" data-level="3">
+          <div class="level-icon"></div>
+          <span class="level-title">Level 3</span>
+          <span class="level-cards">8 cards</span>
+        </button>
+
+        <button class="level-btn" data-level="4">
+          <div class="level-icon"></div>
+          <span class="level-title">Level 4</span>
+          <span class="level-cards">12 cards</span>
+        </button>
+
+        <button class="level-btn" data-level="5">
+          <div class="level-icon"></div>
+          <span class="level-title">Level 5</span>
+          <span class="level-cards">16 cards</span>
+        </button>
+
+        <button class="level-btn" data-level="6">
+          <div class="level-icon"></div>
+          <span class="level-title">Level 6</span>
+          <span class="level-cards">20 cards</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="gameScreen" class="screen">
+      <div class="hud">
+        <button id="backBtn" class="ghost">← Back</button>
+
+        <div class="chips">
+          <span id="levelLabel" class="chip"></span>
+          <span id="movesLabel" class="chip"></span>
+          <span id="matchesLabel" class="chip"></span>
+        </div>
+      </div>
+
+      <div id="cardGrid" class="grid"></div>
+    </section>
+
+  </section>
+</main>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay hidden">
+  <div class="overlay-card">
+    <h2 id="overlayTitle">Great job!</h2>
+    <p id="overlayMsg">You found all the cozy pairs.</p>
+    <img src="assets/animations/raven-dance.gif" alt="Raven dancing" class="overlay-gif">
+    <div class="overlay-actions">
+      <button id="playAgainBtn" class="pill primary">Play again</button>
+      <button id="backHomeBtn" class="pill">Back to start</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  Raven’s Misadventures
+</footer>
+
+<script src="js/game.js"></script>
+</body>
+</html>
